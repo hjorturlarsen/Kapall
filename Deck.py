@@ -3,6 +3,7 @@
 
 import random
 import time
+from itertools import chain
 
 class Deck:
 	def __init__(self):
@@ -22,6 +23,7 @@ class Deck:
 			for r in rank:
 				self.deck.append(s+`r`)
 		random.shuffle(self.deck)
+		return self.deck
 
 	#N: self.deck.isEmpty()
 	#F: self.deck er spilabúnki
@@ -43,21 +45,13 @@ class Deck_B:
 	def __init__(self):
 		self.deck_b = []
 
-	def __repr__(self):
+	def __str__(self):
 		return self.deck_b
 
-		#N: self.deck_b.isEmpty()
-		#F: self.deck_b er spilabúnki
-		#E: True ef búnkinn er ekki tómur, annars False
-		def isEmpty(self):
-			if(len(self.deck_b) == 0):
-				return True
-			else:
-				return False
 
 class Table:
 	def __init__(self):
-		self.table = [[0]*5]*7 #Byr til 7 dalka med 5 "0" gildum
+		self.table = [[0,0,0,0,0] for collumn in range (7)]
 
 	def __str__(self):
 		result = "\n".join("\t".join(map(str,l)) for l in self.table)
@@ -72,23 +66,16 @@ class Game:
 
 	#N: self.set_up_game()
 	#F: Ekkert
-	#E: Ef Búnki A var ekki tómur, þá er búið að stilla upp leiknum.
+	#E: Ef Búnki A var ekki tómur, þá er búið að stilla upp leiknum.l
 	#	Þ.e. búa til 7 dálka með 5 spilum hvor, búnka A sem inniheldur
 	#	afgangs spilin og búnka B sem inniheldur eitt dregið spil úr A.
 	#	Annars eitthvað ???
 	def set_up_game(self):
 		if(not self.deck_a.isEmpty()):
-			print("On Table:")
 			for col_index, collumn in enumerate(self.table.table):
-				for slot_index, slot in enumerate(collumn):
-					collumn[slot_index] = self.deck_a.draw_card()
+				for slot in range(0,5):
+					collumn[slot] = self.deck_a.draw_card()
 				self.deck_b = self.deck_a.draw_card()
-				print(collumn)
-			print("Deck A:")
-			print(self.deck_a.deck)
-			print("Deck B:")
-			print(self.deck_b)
-
 
 	#N: self.begin_time()
 	#F: Ekkert
@@ -98,19 +85,17 @@ class Game:
 		while (True):
 			end = time.time()
 			time.sleep(0.01)
-			print("%.3f" % (end-start))
+			timi = "%.3f" % (end-start)
 
 	#N: self.reset_game()
 	#F: Ekkert
 	#E: Búið er að frumstilla leikinn.
-	def reset_game(self):
-		__new__()
+	def new_game(self):
+		self.__init__()
 
 
 def main():
 	game = Game()
-	table = Table()
-
 
 if __name__ == '__main__':
     main()
