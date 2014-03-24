@@ -3,7 +3,7 @@ import sqlite3
 
 # Variables for DB
 ident = raw_input("id: ")
-initials = raw_input("Initials: ")
+initials = unicode(raw_input("Initials: "), 'utf-8') # Can use Unicode characters
 score = raw_input("Score: ")
 time = raw_input("Time: ")
 
