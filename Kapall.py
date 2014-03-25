@@ -14,8 +14,9 @@ class Card:
 		self.frontImg = pygame.image.load("data/"+id+".png")
 		self.img = self.backImg
 		self.rect = self.backImg.get_rect()
-		self.rect.x = 0
-		self.rect.y = 0
+		self.rect.x = 15
+		self.rect.y = 15
+		self.selected = 0
 		if (int(id[1:] == 13)):
 			self.parent = id[:1] + "1"
 		else:
@@ -39,7 +40,7 @@ class Card:
 			self.img = self.fimg
 
 	def draw(self,surface):
-		surface.blit(self.backImg,self.rect.topleft)
+		surface.blit(self.img,self.rect.topleft)
 
 	#def move(self,dx,dy):
     #    self.rect.x += dx
@@ -99,20 +100,62 @@ class Deck:
 			return self.deck.pop()
 
 	def draw(self, surface):
-		for card in deck:
+		for card in self.deck:
 			card.draw(surface)
 
 #---------------------------------------------------------------------#
 
+class Deck_B:
+	def __init__(self):
+		self.deck_b = []
+
+	def __str__(self):
+		return self.deck_b
+
+	def add_card(self, card):
+		self.deck_b.append(card)
+
+	def draw(self, surface):
+		for card in self.deck_b:
+			surface.blit(card.img, card.rect.topleft)
+
+#---------------------------------------------------------------------#
+
+class Board:
+	def __init__(self):
+		self.board = [[0,0,0,0,0] for collumn in range (7)]
+
+	def __str__(self):
+		result = "\n".join("\t".join(map(str,l)) for l in self.board)
+		return result
+
+	def draw(self, surface):
+		for collumn in self.board:
+			for card in collumn:
+				card.draw(surface)
+
+	#N: self.board[x].isEmpty()
+	#F: self.board er listi af listum, þar sem ytri listinn er að lengd 7
+	#		og innri listarnir eru af lengd 5.
+	#E: True ef innri listi x er tómnur, annars False
+	def isEmpty(self, id):
+		if(len(self.board[id]) == 0):
+			return True
+		else:
+			return False
+
+#---------------------------------------------------------------------#
+
+
 class GUI:
 	def __init__(self):
-		width = 1000
-		height = 600
+		width = 800
+		height = 500
 
 		pygame.init()
 		self.screen = pygame.display.set_mode((width, height))
 		pygame.display.set_caption('Dolan n Frens')
-		font = pygame.font.Font('data/menu_font.ttf', 32)
+		#font = pygame.font.Font('data/menu_font.ttf', 32)
 		pygame.mouse.set_visible(1)
 		background = pygame.Surface(self.screen.get_size())
 		background = background.convert()
@@ -146,11 +189,19 @@ class GUI:
 		        elif event.type == menu.Menu.MENUCLICKEDEVENT:
 		        	#Start
 		            if event.item == 0:
-		                isGameActive = True
-		                self.myMenu.deactivate()
+						isGameActive = True
+						self.myMenu.deactivate()
+						self.deck_a = Deck()
+						self.deck_b = Deck_B()
+						self.board = Board()
+						#Setja upp kapal
+						self.set_up_board(self.screen)
+						self.set_up_deck_a(self.screen)
+						self.set_up_deck_b(self.screen)
 		            #Highscores
 		            if event.item == 1:
-		               print "Highscores"
+						self.myMenu = menu.Menu([u"Hjörtur \t 2344", u"Guðni \t 2058", u"Hrolfur", u"Egill"])
+						self.myMenu.drawMenu()
 		            #About
 		            if event.item == 2:
 		            	print "About"
@@ -160,15 +211,19 @@ class GUI:
        
 		    self.screen.blit(background, (0, 0))    
 		    if self.myMenu.isActive():
-		        self.myMenu.drawMenu()
+		        self.myMenu.drawMenu()	
 		    else:
-				#---------------------------------------------------------------------#
-				self.mode = 0
-				self.deck_a = Deck()
-				self.deck_b = Deck_B()
-				self.board = Board()
-				self.set_up_game(self.screen)
-		     	#background.fill((0, 0, 0))
+				self.deck_a.draw(self.screen)
+				self.deck_b.draw(self.screen)
+				self.board.draw(self.screen)
+				#if event.type == MOUSEBUTTONDOWN:
+				#	if event.button in[1, 2, 3]:
+				#		mp = mouse.get_pos()
+				#		if self.selectionRect.collidepoint(mp):
+				#			print "asdfasdf"
+#
+#							print "collide"
+						
 
 		    pygame.display.flip()
 
@@ -178,51 +233,37 @@ class GUI:
 	#		Þ.e. búa til 7 dálka með 5 spilum hvor, búnka A sem inniheldur
 	#		afgangs spilin og búnka B sem inniheldur eitt dregið spil úr A.
 	#		Annars eitthvað ???
-	def set_up_game(self, surface):
+	def set_up_board(self, surface):
+		x = 50
 		if(not self.deck_a.isEmpty()):
-			for col_index, collumn in enumerate(self.board.board):
-				for slot in range(0,5):
+			for col_idx, collumn in enumerate(self.board.board):
+				y = 15
+				for i in range(0,5):
 					card = self.deck_a.get_card()
-					print type(card)
-					surface.blit(card.frontImg, card.rect.topleft)
-				self.deck_b = self.deck_a.get_card()
+					card.rect.x = x
+					card.rect.y = y
+					card.img = card.frontImg
+					collumn[i] = card
+					y+=30
+				x += 100
+			self.deck_b.add_card(self.deck_a.get_card())
 
-#---------------------------------------------------------------------#
-
-class Deck_B:
-	def __init__(self):
-		self.deck_b = []
-
-	def __str__(self):
-		return self.deck_b
-
-#---------------------------------------------------------------------#
-
-class Board:
-	def __init__(self):
-		self.board = [[0,0,0,0,0] for collumn in range (7)]
-
-	def __str__(self):
-		result = "\n".join("\t".join(map(str,l)) for l in self.board)
-		return result
-
-	#N: self.board.move_from_collumn(x)
-	#F: self.board er listi af listum, þar sem ytri listinn er að lengd 7
-	#		og innri listarnir eru af lengd 5.
-	#E: Búið er að fjarlægja aftasta stakið úr lista númer x.
-	def move_from_collumn(self, id):
-		if(not self.board[id].isEmpty()):
-			return self.board[id].pop()
-
-	#N: self.board[x].isEmpty()
-	#F: self.board er listi af listum, þar sem ytri listinn er að lengd 7
-	#		og innri listarnir eru af lengd 5.
-	#E: True ef innri listi x er tómnur, annars False
-	def isEmpty(self, id):
-		if(len(self.board[id]) == 0):
-			return True
-		else:
-			return False
+	def set_up_deck_a(self, surface):
+		x = 50
+		y = 300
+		for card in self.deck_a.deck:
+			card.rect.x = x
+			card.rect.y = y
+			card.img = card.backImg
+			
+	def set_up_deck_b(self, surface):
+		x = 150
+		y = 300
+		for card in self.deck_b.deck_b:
+			card.rect.x = x
+			card.rect.y = y
+			card.img = card.frontImg
+			x += 30
 
 #---------------------------------------------------------------------#
 
@@ -253,9 +294,6 @@ class Game:
 
 def main():
 	gui = GUI()
-	game = Game()
-	if(not gui.myMenu.isActive()):
-		game.set_up_game(gui.screen)
-		print("ble")
+
 if __name__ == '__main__':
     main()
