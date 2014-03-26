@@ -67,6 +67,7 @@ class GUI:
 				self.board.draw(self.screen)
 				if event.type == MOUSEBUTTONDOWN:
 					MouseLPressed = True
+					self.deck_a_selectable()
 
 				if event.type == MOUSEBUTTONUP:
 					MouseLPressed = False
@@ -75,7 +76,6 @@ class GUI:
 						self.deck_b.add_card(deck_a_pop)
 						self.set_up_deck_b(self.screen)
 						self.set_up_deck_a(self.screen)
-					self.deck_a_selectable()
 
 				if MouseLPressed == True:
 					for object in self.deck_a, self.board:
