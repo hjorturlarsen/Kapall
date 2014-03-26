@@ -27,6 +27,13 @@ class Board:
 	def clickCheck(self, pos):
 		for collumn in self.board:
 			for card in collumn:
-				if card.rect.collidepoint(pos):
-					card.selected = True
-					card.rect.center  = pos
+				if card.selected:
+					if card.rect.collidepoint(pos):
+						card.rect.center  = pos
+
+	def select_card(self, pos):
+		for collumn in self.board:
+			for card in collumn:
+				if card.selectable:
+					if card.rect.collidepoint(pos):
+						card.selected = True

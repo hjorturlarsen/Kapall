@@ -67,6 +67,7 @@ class GUI:
 				self.board.draw(self.screen)
 				if event.type == MOUSEBUTTONDOWN:
 					MouseLPressed = True
+					self.board.select_card(event.pos)
 					self.deck_a_selectable()
 
 				if event.type == MOUSEBUTTONUP:
@@ -80,7 +81,6 @@ class GUI:
 				if MouseLPressed == True:
 					for object in self.deck_a, self.board:
 						object.clickCheck(event.pos)
-
 
 		    	pygame.display.flip()
 
@@ -102,6 +102,7 @@ class GUI:
 						y+=30
 					x += 100
 				self.deck_b.add_card(self.deck_a.get_card())
+				collumn[-1].selectable = True
 
 	def set_up_deck_a(self, surface):
 		x = 50
@@ -123,5 +124,5 @@ class GUI:
 			card.rect.x = x
 			card.rect.y = y
 			card.img = card.frontImg
-			x += 20
+			x += 10
 			card.selectable = False
