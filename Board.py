@@ -28,7 +28,5 @@ class Board:
 		for collumn in self.board:
 			for card in collumn:
 				if card.rect.collidepoint(pos):
-					if card.selectable:
-						print "COLLISION " + card.id
-					else:
-						return
+					card.selected = True
+					card.rect.center  = pos

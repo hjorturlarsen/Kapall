@@ -16,6 +16,7 @@ class Deck_B:
 			surface.blit(card.img, card.rect.topleft)
 
 	def clickCheck(self, pos):
-		for card in self.deck_b:
-			if card.rect.collidepoint(pos):
-				print "COLLISION " + card.id
+		for object in self.deck_b:
+			if object.rect.collidepoint(pos):
+				if object.selectable:
+					return True

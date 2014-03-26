@@ -61,6 +61,7 @@ class Deck(pygame.sprite.Sprite):
 			card.draw(surface)
 
 	def clickCheck(self, pos):
-		for card in self.deck:
-			if card.rect.collidepoint(pos):
-				print "COLLISION " + card.id
+		for object in self.deck:
+			if object.rect.collidepoint(pos):
+				if object.selectable:
+					return True

@@ -11,11 +11,14 @@ class GUI:
 		self.screen = pygame.display.set_mode((800, 500))
 		pygame.display.set_caption('Gooby plz')
 		pygame.mouse.set_visible(1)
-		background = pygame.image.load("data/background.png")
+		background = pygame.image.load("data/dolanbackground.png")
 		backgroundRect = background.get_rect()
+
 		self.deck_a = Deck.Deck()
 		self.deck_b = Deck_B.Deck_B()
 		self.board = Board.Board()
+		self.deck_a_selectable()
+
 		allsprites = pygame.sprite.RenderPlain((self.deck_a))
 		clock = pygame.time.Clock()
 
@@ -25,19 +28,21 @@ class GUI:
 		myMenu = menu.Menu(ourMenu)
 		myMenu.drawMenu()
 
+
+		MouseLPressed = False
 		# MAINLOOP
 		while 1:
 		# INPUT EVENTS
-		    for event in pygame.event.get():
-		        myMenu.handleEvent(event)
-		        # QUIT TO MENU
-		        if event.type == QUIT:
-		            return
-		        elif event.type == KEYDOWN and event.key == K_ESCAPE:
-		            myMenu.activate()
-		        elif event.type == menu.Menu.MENUCLICKEDEVENT:
-		        	#START AND INITIALIZE GAME
-		            if event.item == 0:
+			for event in pygame.event.get():
+				myMenu.handleEvent(event)
+				# QUIT TO MENU
+				if event.type == QUIT:
+					return
+				elif event.type == KEYDOWN and event.key == K_ESCAPE:
+					myMenu.activate()
+				elif event.type == menu.Menu.MENUCLICKEDEVENT:
+					#START AND INITIALIZE GAME
+					if event.item == 0:
 						isGameActive = True
 						myMenu.deactivate()
 
@@ -45,15 +50,15 @@ class GUI:
 						self.set_up_board(self.screen)
 						self.set_up_deck_a(self.screen)
 						self.set_up_deck_b(self.screen)
-		        	#QUIT
-		            if event.item == 1:
-		                return
+					#QUIT
+					if event.item == 1:
+						return
 
-		    self.screen.blit(background, (0, 0))    
-		    if myMenu.isActive():
-		        myMenu.drawMenu()
-		    #TEIKNA HLUTI
-		    else:
+			self.screen.blit(background, (0, 0))
+			if myMenu.isActive():
+				myMenu.drawMenu()
+			#TEIKNA HLUTI
+			else:
 				allsprites.update()
 				#allsprites.draw(self.screen)
 				self.screen.blit(background, backgroundRect)
@@ -61,12 +66,23 @@ class GUI:
 				self.deck_b.draw(self.screen)
 				self.board.draw(self.screen)
 				if event.type == MOUSEBUTTONDOWN:
-					if event.button == 1:
-						for object in self.deck_a, self.deck_b, self.board:
-							object.clickCheck(event.pos)
+					MouseLPressed = True
+
+				if event.type == MOUSEBUTTONUP:
+					MouseLPressed = False
+					if self.deck_a.clickCheck(event.pos):
+						deck_a_pop = self.deck_a.get_card()
+						self.deck_b.add_card(deck_a_pop)
+						self.set_up_deck_b(self.screen)
+						self.set_up_deck_a(self.screen)
+					self.deck_a_selectable()
+
+				if MouseLPressed == True:
+					for object in self.deck_a, self.board:
+						object.clickCheck(event.pos)
 
 
-		    pygame.display.flip()
+		    	pygame.display.flip()
 
 	def set_up_board(self, surface):
 			x = 50
@@ -94,6 +110,11 @@ class GUI:
 			card.rect.x = x
 			card.rect.y = y
 			card.img = card.backImg
+	
+	def deck_a_selectable(self):
+		if len(self.deck_a.deck) > 0:
+			self.deck_a.deck[-1].selectable = True
+
 
 	def set_up_deck_b(self, surface):
 		x = 150
@@ -102,4 +123,5 @@ class GUI:
 			card.rect.x = x
 			card.rect.y = y
 			card.img = card.frontImg
-			x += 30
+			x += 20
+			card.selectable = False
