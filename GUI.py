@@ -3,7 +3,8 @@
 
 import os, pygame, math, sys, random, time
 from pygame.locals import *
-import menu, GUI, Board, Deck_B, Deck, Card
+import menu, GUI, Deck, Card, Group_of_cards, Golf_relaxed
+from Golf_relaxed import *
 
 class GUI:
 	def __init__(self):
@@ -14,12 +15,12 @@ class GUI:
 		background = pygame.image.load("data/dolanbackground.png")
 		backgroundRect = background.get_rect()
 
-		self.deck_a = Deck.Deck()
-		self.deck_b = Deck_B.Deck_B()
-		self.board = Board.Board()
-		self.deck_a_selectable()
 
-		allsprites = pygame.sprite.RenderPlain((self.deck_a))
+		self.game = Golf_relaxed()
+		
+
+		allsprites = pygame.sprite.RenderPlain(self.game.col1)
+
 		clock = pygame.time.Clock()
 
 		# MENU
@@ -29,7 +30,7 @@ class GUI:
 		myMenu.drawMenu()
 
 
-		MouseLPressed = False
+		self.MouseLPressed = False
 		# MAINLOOP
 		while 1:
 		# INPUT EVENTS
@@ -46,10 +47,10 @@ class GUI:
 						isGameActive = True
 						myMenu.deactivate()
 
-						#SÝNA SPIL
-						self.set_up_board(self.screen)
-						self.set_up_deck_a(self.screen)
-						self.set_up_deck_b(self.screen)
+						self.set_up_collumns()
+						self.set_up_deckA()
+						self.set_up_deckB()
+
 					#QUIT
 					if event.item == 1:
 						return
@@ -59,70 +60,72 @@ class GUI:
 				myMenu.drawMenu()
 			#TEIKNA HLUTI
 			else:
-				allsprites.update()
-				#allsprites.draw(self.screen)
 				self.screen.blit(background, backgroundRect)
-				self.deck_a.draw(self.screen)
-				self.deck_b.draw(self.screen)
-				self.board.draw(self.screen)
+
+				self.draw_all(self.screen)
+
 				if event.type == MOUSEBUTTONDOWN:
-					MouseLPressed = True
-					self.board.select_card(event.pos)
-					self.deck_a_selectable()
+					self.MouseLPressed = True
+
 
 				if event.type == MOUSEBUTTONUP:
-					MouseLPressed = False
-					if self.deck_a.clickCheck(event.pos):
-						deck_a_pop = self.deck_a.get_card()
-						self.deck_b.add_card(deck_a_pop)
-						self.set_up_deck_b(self.screen)
-						self.set_up_deck_a(self.screen)
+					self.MouseLPressed = False
 
-				if MouseLPressed == True:
-					for object in self.deck_a, self.board:
-						object.clickCheck(event.pos)
 
-		    	pygame.display.flip()
+				#if self.MouseLPressed == True:
+					#for card
+					#self.game.col1.clicked(event.pos)
+					#for object in self.game.col1.group:
+					#	object.clicked(event.pos)
 
-	def set_up_board(self, surface):
-			x = 50
-			if(not self.deck_a.isEmpty()):
-				for col_idx, collumn in enumerate(self.board.board):
-					y = 15
-					for i in range(0,5):
-						card = self.deck_a.get_card()
-						card.rect.x = x
-						card.rect.y = y
-						card.img = card.frontImg
-						collumn[i] = card
+			pygame.display.flip()
 
-						if i == 4:
-							card.selectable = True
-							
-						y+=30
-					x += 100
-				self.deck_b.add_card(self.deck_a.get_card())
-				collumn[-1].selectable = True
+	def draw_all(self, surface):
+		self.game.col1.draw(surface)
+		self.game.col2.draw(surface)
+		self.game.col3.draw(surface)
+		self.game.col4.draw(surface)
+		self.game.col5.draw(surface)
+		self.game.col6.draw(surface)
+		self.game.col7.draw(surface)
+		self.game.deckA.draw(surface)
+		self.game.deckB.draw(surface)
 
-	def set_up_deck_a(self, surface):
+
+	def set_up_collumns(self):
+		col1 = self.game.col1.group 
+		col2 = self.game.col2.group
+		col3 = self.game.col3.group
+		col4 = self.game.col4.group
+		col5 = self.game.col5.group
+		col6 = self.game.col6.group
+		col7 = self.game.col7.group
+		collumns = [col1, col2, col3, col4, col5, col6, col7]
+		x = 50
+		for col_idx, collumn in enumerate(collumns):
+			y = 15
+			for card in collumn:
+				card.rect.x = x
+				card.rect.y = y
+				card.img = card.frontImg
+				y += 30
+			x += 100
+			collumn[-1].selectable = True
+
+	def set_up_deckA(self):
 		x = 50
 		y = 300
-		for card in self.deck_a.deck:
+		for card in self.game.deckA.group:
 			card.rect.x = x
 			card.rect.y = y
 			card.img = card.backImg
+		self.game.deckA.group[-1].selectable = True
 	
-	def deck_a_selectable(self):
-		if len(self.deck_a.deck) > 0:
-			self.deck_a.deck[-1].selectable = True
-
-
-	def set_up_deck_b(self, surface):
+	def set_up_deckB(self):
 		x = 150
 		y = 300
-		for card in self.deck_b.deck_b:
+		for card in self.game.deckB.group:
 			card.rect.x = x
 			card.rect.y = y
 			card.img = card.frontImg
 			x += 10
-			card.selectable = False

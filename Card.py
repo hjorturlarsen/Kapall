@@ -6,8 +6,8 @@ import os
 
 class Card(pygame.sprite.Sprite):
 	def __init__(self, id):
-		self.id = str(id)
 		pygame.sprite.Sprite.__init__(self)
+		self.id = str(id)
 		self.backImg = self.load_image('b')
 		self.frontImg = self.load_image(id)
 		self.img = self.backImg
@@ -16,6 +16,7 @@ class Card(pygame.sprite.Sprite):
 		self.rect.y = 0
 		self.selected = False
 		self.selectable = False
+		
 		if (int(id[1:] == 13)):
 			self.parent = id[:1] + "1"
 		else:
@@ -31,7 +32,7 @@ class Card(pygame.sprite.Sprite):
 			self.child = id[:1] + rank_str
 
 	def __str__(self):
-		return id
+		return self.id
 
 	def load_image(self, name, colorkey=None):
 		name = name+'.png'
@@ -47,10 +48,6 @@ class Card(pygame.sprite.Sprite):
 				colorkey = image.get_at((0,0))
 			image.set_colorkey(colorkey, RLEACCEL)
 		return image
-
-	def update(self):
-		pos = pygame.mouse.get_pos()
-		self.rect.midtop = pos
 
 	def draw(self,surface):
 		surface.blit(self.img,self.rect.topleft)

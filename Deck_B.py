@@ -6,10 +6,7 @@ class Deck_B:
 		self.deck_b = []
 
 	def __str__(self):
-		return self.deck_b
-
-	def add_card(self, card):
-		self.deck_b.append(card)
+		return self.deck_b	
 
 	def draw(self, surface):
 		for card in self.deck_b:

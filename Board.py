@@ -14,10 +14,6 @@ class Board:
 			for card in collumn:
 				card.draw(surface)
 
-	#N: self.board[x].isEmpty()
-	#F: self.board er listi af listum, þar sem ytri listinn er að lengd 7
-	#		og innri listarnir eru af lengd 5.
-	#E: True ef innri listi x er tómnur, annars False
 	def isEmpty(self, id):
 		if(len(self.board[id]) == 0):
 			return True
@@ -28,8 +24,7 @@ class Board:
 		for collumn in self.board:
 			for card in collumn:
 				if card.selected:
-					if card.rect.collidepoint(pos):
-						card.rect.center  = pos
+					card.rect.center = pos
 
 	def select_card(self, pos):
 		for collumn in self.board:
