@@ -4,13 +4,14 @@ import pygame
 from pygame import *
 import os
 
-class Card(pygame.sprite.Sprite):
+class Card(pygame.sprite.DirtySprite):
 	def __init__(self, id):
-		pygame.sprite.Sprite.__init__(self)
+		pygame.sprite.DirtySprite.__init__(self)
+		self.dirty = 1
 		self.id = str(id)
 		self.backImg = self.load_image('b')
 		self.frontImg = self.load_image(id)
-		self.img = self.backImg
+		self.image = self.backImg
 		self.rect = self.backImg.get_rect()
 		self.rect.x = 0
 		self.rect.y = 0

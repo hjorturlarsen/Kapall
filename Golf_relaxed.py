@@ -10,25 +10,14 @@ from pygame import *
 class Golf_relaxed:
 	def __init__(self):
 		self.deck = Deck()
-		self.deckA = Group_of_cards()
-		self.deckB = Group_of_cards()
-		self.col1 = Group_of_cards()
-		self.col2 = Group_of_cards()
-		self.col3 = Group_of_cards()
-		self.col4 = Group_of_cards()
-		self.col5 = Group_of_cards()
-		self.col6 = Group_of_cards()
-		self.col7 = Group_of_cards()
+		self.deckA = pygame.sprite.Group()
+		self.deckB = pygame.sprite.Group()
+		self.collumns = pygame.sprite.Group()
 		self.set_up_game()
 		
 	def set_up_game(self):
-		for card in range(0,5):
-			self.col1.add(self.deck.get())
-			self.col2.add(self.deck.get())
-			self.col3.add(self.deck.get())
-			self.col4.add(self.deck.get())
-			self.col5.add(self.deck.get())
-			self.col6.add(self.deck.get())
-			self.col7.add(self.deck.get())
+		for i in range(0,35):
+			self.collumns.add(self.deck.get())
 		self.deckB.add(self.deck.get())
-		self.deckA.group = self.deck.deck
+		for i in range(0,16):
+			self.deckA.add(self.deck.get())
