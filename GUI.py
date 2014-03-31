@@ -88,6 +88,7 @@ class GUI:
 						self.set_up_collumns()
 						self.set_up_deckA()
 						self.set_up_deckB()
+						self.selectable_collumns()
 
 			self.screen.blit(background, (0, 0))
 			if myMenu.isActive():
@@ -114,8 +115,8 @@ class GUI:
 						for idx2, card in enumerate(col):
 							if card.selectable:
 								card.clicked(event.pos)
-							if card.selected:
-								self.old_pos = (card.rect.x, card.rect.y)
+							#if card.selected:
+								#self.old_pos = (card.rect.x, card.rect.y)
 								#print self.old_pos
 
 				if event.type == MOUSEBUTTONUP:
@@ -129,6 +130,8 @@ class GUI:
 								last_in_deckB = self.game.deckB.sprites()[-1]
 								if pygame.sprite.collide_rect(card, last_in_deckB) and (last_in_deckB.child == int(card.rank) or last_in_deckB.parent == int(card.rank)):
 									self.game.deckB.add(card)
+									col.pop()
+									self.selectable_collumns()
 									the_score += 99
 									text = font.render("Score: %d" % (the_score), 1, (255, 255, 255))
 								else:
@@ -147,6 +150,13 @@ class GUI:
 						for idx2, card in enumerate(col):
 							card.move(event.pos)
 
+				if self.MouseLPressed == False:
+					for idx, col in enumerate(self.collumns):
+						for idx2, card in enumerate(col):
+							if card.selectable:
+								if card.rect.collidepoint(mouse.get_pos()):
+									self.old_pos = (card.rect.x, card.rect.y)
+
 
 			pygame.display.flip()
 
@@ -162,16 +172,8 @@ class GUI:
 			card.draw(self.screen)
 
 	def set_up_collumns(self):
-		col1 = self.game.col1.sprites()
-		col2 = self.game.col2.sprites()
-		col3 = self.game.col3.sprites()
-		col4 = self.game.col4.sprites()
-		col5 = self.game.col5.sprites()
-		col6 = self.game.col6.sprites()
-		col7 = self.game.col7.sprites()
-		collumns = [col1, col2, col3, col4, col5, col6, col7]
 		x = 50
-		for idx, col in enumerate(collumns):
+		for idx, col in enumerate(self.collumns):
 			y = 15
 			for idx2, card in enumerate(col):
 				card.rect.x = x
@@ -179,8 +181,13 @@ class GUI:
 				card.image = card.frontImg
 				y += 30
 			x += 100
+
+	def selectable_collumns(self):
+		for idx, col in enumerate(self.collumns):
+			print len(col)
 			if len(col) > 0:
 				col[-1].selectable = True
+			
 
 	def set_up_deckA(self):
 		deckA = self.game.deckA.sprites()
