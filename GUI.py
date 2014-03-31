@@ -1,13 +1,19 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-import os, pygame, math, sys, random, time
+import os, pygame, math, sys, random
+import time as tm 
 from pygame import *
 import menu, GUI, Deck, Card, Golf_relaxed
 from Golf_relaxed import *
 
 class GUI:
 	def __init__(self):
+
+		the_timeSec = 0.0
+		the_timeMin = 0.0
+		the_score = 0
+
 		pygame.init()
 		self.screen = pygame.display.set_mode((800, 500))
 		pygame.display.set_caption('Gooby plz')
@@ -31,10 +37,32 @@ class GUI:
 		myMenu = menu.Menu(ourMenu, 'data/dolanbackground.png')
 		myMenu.drawMenu()
 
+		# Display score
+		font = pygame.font.Font(None, 36)
+		text = font.render("Score: %d" % (the_score), 1, (255, 255, 255))
+		textpos = text.get_rect()
+		textpos.center = (700, 475)
+		self.screen.blit(text, textpos)
+
+		# Display time
+		start = tm.time()
+		textTime = font.render("Time: %.0f : %.0f" % (the_timeMin, the_timeSec), 1, (255, 255, 255))
+		textposTime = textTime.get_rect()
+		textposTime.center = (100, 475)
+		self.screen.blit(textTime, textposTime)
+
 
 		self.MouseLPressed = False
 		# MAINLOOP
 		while 1:
+			#Timateljari
+			end = tm.time()
+			tm.sleep(0.1)
+			the_timeSec = end-start
+			if the_timeSec > 60:
+				the_timeMin = the_timeSec / 60
+				the_timeSec = 0
+			textTime = font.render("Time: %.0f : %.0f" % (the_timeMin, the_timeSec), 1, (255, 255, 255))
 
 		# INPUT EVENTS
 			for event in pygame.event.get():
@@ -74,7 +102,10 @@ class GUI:
 						if card.clicked(event.pos):
 							if len(self.game.deckA.sprites()) > 0:
 								self.game.deckB.add(card)
-								self.game.deckA.remove(card)							
+								self.game.deckA.remove(card)
+							#50 stig ef ytt er a bunka A
+							the_score += 50
+							text = font.render("Score: %d" % (the_score), 1, (255, 255, 255))							
 
 
 				if event.type == MOUSEBUTTONUP:
@@ -82,6 +113,9 @@ class GUI:
 					self.set_up_deckB()
 					self.set_up_deckA()
 
+				#Update score and time
+				self.screen.blit(text, textpos)
+				self.screen.blit(textTime, textposTime)
 
 				if self.MouseLPressed == True:
 					for idx, col in enumerate(self.collumns):
