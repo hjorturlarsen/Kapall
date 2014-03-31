@@ -54,7 +54,7 @@ class GUI:
 
 						self.set_up_collumns()
 						self.set_up_deckA()
-						#self.set_up_deckB()
+						self.set_up_deckB()
 
 			self.screen.blit(background, (0, 0))
 			if myMenu.isActive():
@@ -65,6 +65,7 @@ class GUI:
 				self.screen.blit(background, backgroundRect)
 				rects = allsprites.draw(self.screen)
 				pygame.display.update(rects)
+
 				self.update()
 
 				if event.type == MOUSEBUTTONDOWN:
@@ -72,14 +73,15 @@ class GUI:
 					for idx, card in enumerate(self.game.deckA):
 						if card.clicked(event.pos):
 							if len(self.game.deckA.sprites()) > 0:
-								self.game.deckA.remove(card)
 								self.game.deckB.add(card)
+								self.game.deckA.remove(card)	
+								pygame.display.update(rects)			
+
 
 				if event.type == MOUSEBUTTONUP:
-					if self.MouseLPressed == True:
-						self.set_up_deckA()
-						self.set_up_deckB()
-						self.MouseLPressed = False
+					self.set_up_deckB()
+					self.set_up_deckA()
+					self.MouseLPressed = False
 
 
 				if self.MouseLPressed == True:
@@ -102,7 +104,6 @@ class GUI:
 			card.dirty = 1
 		for idx, card in enumerate(deckB):
 			card.dirty = 1
-
 
 	def set_up_collumns(self):
 		col1 = self.game.col1.sprites()
@@ -147,4 +148,5 @@ class GUI:
 			card.rect.y = y
 			card.image = card.frontImg
 			card.selectable = False
+			self.layer = None
 			x += 10
