@@ -25,7 +25,7 @@ class GUI:
 		self.game = Golf_relaxed()
 		
 		self.collumns = [self.game.col1.sprites(), self.game.col2.sprites(), self.game.col3.sprites(), self.game.col4.sprites(), self.game.col5.sprites(), self.game.col6.sprites(), self.game.col7.sprites()]
-		allsprites =  pygame.sprite.LayeredUpdates((self.game.deckB, self.game.deckA, self.game.col1, self.game.col2, self.game.col3, self.game.col4, self.game.col5, self.game.col6, self.game.col7))
+		allsprites =  pygame.sprite.LayeredUpdates((self.game.col1, self.game.col2, self.game.col3, self.game.col4, self.game.col5, self.game.col6, self.game.col7))
 		allsprites.clear(self.screen, background)
 
 
@@ -70,8 +70,6 @@ class GUI:
 				if event.type == QUIT:
 					return
 				elif event.type == KEYDOWN and event.key == K_ESCAPE:
-					#SKRÁ NAFN!!!!!!
-					#print self.ask(self.screen, "Name")
 					myMenu.activate()
 				elif event.type == menu.Menu.MENUCLICKEDEVENT:
 
@@ -109,7 +107,6 @@ class GUI:
 						for idx2, card in enumerate(col):
 							if card.selectable:
 								card.clicked(event.pos)
-								
 
 				if event.type == MOUSEBUTTONUP:
 					self.MouseLPressed = False
@@ -117,6 +114,9 @@ class GUI:
 						for idx2, card in enumerate(col):
 							if card.selected:
 								card.selected = False
+							#Collision Detection
+							if pygame.sprite.collide_rect(card,self.game.deckB.sprites()[-1]):
+								self.game.deckB.add(card)
 
 					self.set_up_deckB()
 					self.set_up_deckA()
@@ -189,37 +189,3 @@ class GUI:
 			card.image = card.frontImg
 			card.selectable = False
 			x += 10
-
-	def get_key(self):
-		while 1:
-			event = pygame.event.poll()
-			if event.type == KEYDOWN:
-				return event.key
-			else:
-				pass
-
-	def display_box(self, screen, message):
-		fontobject = pygame.font.Font(None,18)
-		pygame.draw.rect(screen, (0,0,0), ((screen.get_width() / 2) - 100 ,(screen.get_height() / 2) + 140,200,20), 0)
-		pygame.draw.rect(screen, (255,255,255),((screen.get_width() / 2) - 102,(screen.get_height() / 2) + 138,204,24), 1)
-		if len(message) != 0:
-			screen.blit(fontobject.render(message, 1, (255,255,255)),((screen.get_width() / 2) - 100, (screen.get_height() / 2) +144))
-		pygame.display.flip()
-
-
-	def ask(self, screen, question):
-		pygame.font.init()
-		current_string = ""
-		self.display_box(screen, question + ": " + current_string)
-		while 1:
-			inkey = self.get_key()
-			if inkey == K_BACKSPACE:
-				current_string = current_string[:len(current_string)-1]
-			elif inkey == K_RETURN:
-				break
-			#elif inkey == K_MINUS:
-				current_string.append("_")
-			elif inkey <= 127:
-				current_string = current_string + chr(inkey)
-			self.display_box(screen, question + ": " + current_string)
-		return current_string
