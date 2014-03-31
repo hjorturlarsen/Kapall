@@ -19,6 +19,7 @@ class GUI:
 		the_timeSec = 0.0
 		the_timeMin = 0.0
 		the_score = 0
+		score_multiplier = 0
 
 		pygame.init()
 		self.screen = pygame.display.set_mode((800, 500))
@@ -108,16 +109,15 @@ class GUI:
 							if len(self.game.deckA.sprites()) > 0:
 								self.game.deckB.add(card)
 								self.game.deckA.remove(card)
-							#50 points if clicked on deck A
+							# 50 points if clicked on deck A
+							# and multiplier given the value 0
 							the_score += 50
+							score_multiplier = 0
 							text = font.render("Score: %d" % (the_score), 1, (255, 255, 255))
 					for idx, col in enumerate(self.collumns):
 						for idx2, card in enumerate(col):
 							if card.selectable:
 								card.clicked(event.pos)
-							#if card.selected:
-								#self.old_pos = (card.rect.x, card.rect.y)
-								#print self.old_pos
 
 				if event.type == MOUSEBUTTONUP:
 					self.MouseLPressed = False
@@ -132,7 +132,11 @@ class GUI:
 									self.game.deckB.add(card)
 									col.pop()
 									self.selectable_collumns()
-									the_score += 99
+									# Each tima a player can remove more
+									# than 1 card from the board in a row the
+									# score will be multiplied be a higher number
+									score_multiplier += 1
+									the_score += 100 + math.pow(score_multiplier, 4)
 									text = font.render("Score: %d" % (the_score), 1, (255, 255, 255))
 								else:
 									card.rect.x = self.old_pos[0]
@@ -184,7 +188,6 @@ class GUI:
 
 	def selectable_collumns(self):
 		for idx, col in enumerate(self.collumns):
-			print len(col)
 			if len(col) > 0:
 				col[-1].selectable = True
 			
