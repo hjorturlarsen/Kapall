@@ -21,13 +21,14 @@ class GUI:
 		background = pygame.image.load("data/dolanbackground.png")
 		backgroundRect = background.get_rect()
 
-
 		self.game = Golf_relaxed()
 		
 		self.collumns = [self.game.col1.sprites(), self.game.col2.sprites(), self.game.col3.sprites(), self.game.col4.sprites(), self.game.col5.sprites(), self.game.col6.sprites(), self.game.col7.sprites()]
 		allsprites =  pygame.sprite.LayeredUpdates((self.game.col1, self.game.col2, self.game.col3, self.game.col4, self.game.col5, self.game.col6, self.game.col7))
 		allsprites.clear(self.screen, background)
 
+		#Old position of card
+		self.old_pos = None
 
 		clock = pygame.time.Clock()
 
@@ -107,6 +108,9 @@ class GUI:
 						for idx2, card in enumerate(col):
 							if card.selectable:
 								card.clicked(event.pos)
+							if card.selected:
+								self.old_pos = (card.rect.x, card.rect.y)
+								#print self.old_pos
 
 				if event.type == MOUSEBUTTONUP:
 					self.MouseLPressed = False
@@ -114,9 +118,16 @@ class GUI:
 						for idx2, card in enumerate(col):
 							if card.selected:
 								card.selected = False
-							#Collision Detection
-							if pygame.sprite.collide_rect(card,self.game.deckB.sprites()[-1]):
-								self.game.deckB.add(card)
+
+								#Collision Detection
+								last_in_deckB = self.game.deckB.sprites()[-1]
+								if pygame.sprite.collide_rect(card, last_in_deckB) and (last_in_deckB.child == int(card.rank) or last_in_deckB.parent == int(card.rank)):
+									self.game.deckB.add(card)
+									the_score += 99
+									text = font.render("Score: %d" % (the_score), 1, (255, 255, 255))
+								else:
+									card.rect.x = self.old_pos[0]
+									card.rect.y = self.old_pos[1]
 
 					self.set_up_deckB()
 					self.set_up_deckA()

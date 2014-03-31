@@ -9,6 +9,7 @@ class Card(pygame.sprite.DirtySprite):
 		self._layer = 1
 		pygame.sprite.DirtySprite.__init__(self)
 		self.id = str(id)
+		self.rank = self.id[1:]
 		self.backImg = self.load_image('b')
 		self.frontImg = self.load_image(id)
 		self.image = self.backImg
@@ -18,13 +19,13 @@ class Card(pygame.sprite.DirtySprite):
 		self.selected = False
 		self.selectable = False
 		
-		if (int(id[1:] == 13)):
+		if (int(self.rank) == 13):
 			self.parent = 1
 		else:
 			rank_int = int(id[1:])+1
 			self.parent = rank_int
 
-		if (int(id[1:] == 1)):
+		if (int(self.rank) == 1):
 			self.child = 13
 		else:
 			rank_int = int(id[1:])-1
