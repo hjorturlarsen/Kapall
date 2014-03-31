@@ -19,18 +19,16 @@ class Card(pygame.sprite.DirtySprite):
 		self.selectable = False
 		
 		if (int(id[1:] == 13)):
-			self.parent = id[:1] + "1"
+			self.parent = 1
 		else:
 			rank_int = int(id[1:])+1
-			rank_str = str(rank_int)
-			self.parent = id[:1] + rank_str
+			self.parent = rank_int
 
 		if (int(id[1:] == 1)):
-			self.child = id[:1] + "13"
+			self.child = 13
 		else:
 			rank_int = int(id[1:])-1
-			rank_str = str(rank_int)
-			self.child = id[:1] + rank_str
+			self.child = rank_int
 
 	def __str__(self):
 		return self.id
