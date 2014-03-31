@@ -2,12 +2,18 @@
 # encoding: utf-8
 
 import os, pygame, math, sys, random
+import time as tm
 from pygame import *
 import menu, GUI, Deck, Card, Golf_relaxed
 from Golf_relaxed import *
 
 class GUI:
 	def __init__(self):
+
+		the_timeSec = 0.0
+		the_timeMin = 0.0
+		the_score = 0
+
 		pygame.init()
 		self.screen = pygame.display.set_mode((800, 500))
 		pygame.display.set_caption('Gooby plz')
@@ -31,10 +37,30 @@ class GUI:
 		myMenu = menu.Menu(ourMenu, 'data/dolanbackground.png')
 		myMenu.drawMenu()
 
+		# Display score
+		font = pygame.font.Font(None, 36)
+		text = font.render("Score: %d" % (the_score), 1, (255, 255, 255))
+		textpos = text.get_rect()
+		textpos.center = (700, 475)
+		self.screen.blit(text, textpos)
+
+		# Display time
+		start = tm.time()
+		textTime = font.render("Time: %.0f : %.0f" % (the_timeMin, the_timeSec), 1, (255, 255, 255))
+		textposTime = textTime.get_rect()
+		textposTime.center = (100, 475)
+		self.screen.blit(textTime, textposTime)
 
 		self.MouseLPressed = False
 		# MAINLOOP
 		while 1:
+			#Timi
+			end = tm.time()
+			tm.sleep(0.01)
+			the_timeSec = end-start
+			the_timeMin = int(the_timeSec/60)
+			the_timeSec2 = int(the_timeSec % 60)
+			textTime = font.render("Time: %.0f : %.0f" % (the_timeMin, the_timeSec2), 1, (255, 255, 255))
 
 		# INPUT EVENTS
 			for event in pygame.event.get():
@@ -74,6 +100,9 @@ class GUI:
 							if len(self.game.deckA.sprites()) > 0:
 								self.game.deckB.add(card)
 								self.game.deckA.remove(card)
+							#50 points if clicked on deck A
+							the_score += 50
+							text = font.render("Score: %d" % (the_score), 1, (255, 255, 255))
 					for idx, col in enumerate(self.collumns):
 						for idx2, card in enumerate(col):
 							if card.selectable:
@@ -90,6 +119,9 @@ class GUI:
 					self.set_up_deckB()
 					self.set_up_deckA()
 
+				#Update time and score
+				self.screen.blit(text, textpos)
+				self.screen.blit(textTime, textposTime)
 
 				if self.MouseLPressed == True:
 					for idx, col in enumerate(self.collumns):
