@@ -1,11 +1,17 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
+
+
+#---------- SKIPUN TIL AÐ VISTA Í GAGNAGRUNN
+#HighScoreInsertion.insertHighscore(ident, initials, score, time)
+
 import os, pygame, math, sys, random
 import time as tm
 from pygame import *
 import menu, GUI, Deck, Card, Golf_relaxed
 from Golf_relaxed import *
+import HighScoreInsertion
 
 class GUI:
 	def __init__(self):
@@ -198,3 +204,34 @@ class GUI:
 			card.image = card.frontImg
 			card.selectable = False
 			x += 10
+
+	def get_key(self):
+		while 1:
+			event = pygame.event.poll()
+			if event.type == KEYDOWN:
+				return event.key
+			else:
+				pass
+
+	def display_box(self, screen, message):
+		fontobject = pygame.font.Font(None,18)
+		pygame.draw.rect(screen, (0,0,0),((screen.get_width() / 2) - 100 ,(screen.get_height() / 2) + 140,200,20), 0)
+		pygame.draw.rect(screen, (255,255,255),((screen.get_width() / 2) - 102,(screen.get_height() / 2) + 138,204,24), 1)
+		if len(message) != 0:
+			screen.blit(fontobject.render(message, 1, (255,255,255)),((screen.get_width() / 2) - 100, (screen.get_height() / 2) +144))
+		pygame.display.flip()
+
+	def ask(self, screen, question):
+		pygame.font.init()
+		current_string = ""
+		self.display_box(screen, question + ": " + current_string)
+		while 1:
+			inkey = self.get_key()
+			if inkey == K_BACKSPACE:
+				current_string = current_string[:len(current_string)-1]
+			elif inkey == K_RETURN:
+				break
+			elif inkey <= 127 and len(current_string) < 3:
+				current_string = current_string + chr(inkey)
+			self.display_box(screen, question + ": " + current_string.upper())
+		return current_string.upper()
