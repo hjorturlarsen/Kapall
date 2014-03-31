@@ -48,7 +48,10 @@ class Menu:
         self.area = screen.get_rect()
         self.background = pygame.Surface(screen.get_size())
         self.background = self.background.convert()
-        self.background.fill((0, 0, 0))
+        self.background_image = pygame.image.load("data/dolanbackground.png")
+        self.backgroundRect = self.background_image.get_rect()
+        self.background.blit(self.background_image, self.backgroundRect)
+
         self.active = False
         
         if pygame.font:

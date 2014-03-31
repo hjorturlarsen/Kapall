@@ -50,5 +50,6 @@ class Card(pygame.sprite.DirtySprite):
 			image.set_colorkey(colorkey, RLEACCEL)
 		return image
 
-	def draw(self,surface):
-		surface.blit(self.img,self.rect.topleft)
+	def clicked(self, pos):
+		if self.rect.collidepoint(pos):
+			print "click"

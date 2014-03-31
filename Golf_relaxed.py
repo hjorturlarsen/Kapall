@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-import Card, Deck, Group_of_cards
-from Group_of_cards import *
+import Card, Deck
 from Deck import *
 import pygame
 from pygame import *

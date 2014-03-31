@@ -3,7 +3,7 @@
 
 import os, pygame, math, sys, random, time
 from pygame import *
-import menu, GUI, Deck, Card, Group_of_cards, Golf_relaxed
+import menu, GUI, Deck, Card, Golf_relaxed
 from Golf_relaxed import *
 
 class GUI:
@@ -25,9 +25,9 @@ class GUI:
 		clock = pygame.time.Clock()
 
 		# MENU
-		ourMenu = ["Start", "Quit"]
+		ourMenu = ["Start"]
 
-		myMenu = menu.Menu(ourMenu)
+		myMenu = menu.Menu(ourMenu, 'data/dolanbackground.png')
 		myMenu.drawMenu()
 
 
@@ -48,10 +48,6 @@ class GUI:
 						isGameActive = True
 						myMenu.deactivate()
 
-					#QUIT
-					if event.item == 1:
-						return
-
 			self.screen.blit(background, (0, 0))
 			if myMenu.isActive():
 				myMenu.drawMenu()
@@ -60,7 +56,6 @@ class GUI:
 				self.screen.blit(background, backgroundRect)
 				rects = allsprites.draw(self.screen)
 				pygame.display.update(rects)
-
 				self.set_up_collumns()
 				self.set_up_deckA()
 				self.set_up_deckB()
@@ -73,11 +68,9 @@ class GUI:
 					self.MouseLPressed = False
 
 
-				#if self.MouseLPressed == True:
-					#for card
-					#self.game.col1.clicked(event.pos)
-					#for object in self.game.col1.group:
-					#	object.clicked(event.pos)
+				if self.MouseLPressed == True:
+					for card in self.game.collumns.sprites(), self.game.deckA.sprites():
+						print card
 
 			pygame.display.flip()
 

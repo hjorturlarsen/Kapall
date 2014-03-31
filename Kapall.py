@@ -4,7 +4,7 @@
 import os, pygame, math, sys
 from pygame import *
 import random, time
-import menu, GUI, Deck, Card, Group_of_cards, Golf_relaxed
+import menu, GUI, Deck, Card, Golf_relaxed
 
 
 def main():
