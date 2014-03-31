@@ -7,7 +7,6 @@ import os
 class Card(pygame.sprite.DirtySprite):
 	def __init__(self, id):
 		pygame.sprite.DirtySprite.__init__(self)
-		self.dirty = 1
 		self.id = str(id)
 		self.backImg = self.load_image('b')
 		self.frontImg = self.load_image(id)
@@ -17,7 +16,6 @@ class Card(pygame.sprite.DirtySprite):
 		self.rect.y = 0
 		self.selected = False
 		self.selectable = False
-		self.layer = 1
 		
 		if (int(id[1:] == 13)):
 			self.parent = id[:1] + "1"
@@ -54,4 +52,12 @@ class Card(pygame.sprite.DirtySprite):
 	def clicked(self, pos):
 		if self.rect.collidepoint(pos):
 			if self.selectable:
+				self.selected = True
 				return True
+
+	def move(self, pos):
+		if self.selected:
+			self.rect.center = pos
+
+	def draw(self,surface):
+		surface.blit(self.image,self.rect.topleft)

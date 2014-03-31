@@ -19,7 +19,7 @@ class GUI:
 		self.game = Golf_relaxed()
 		
 		self.collumns = [self.game.col1.sprites(), self.game.col2.sprites(), self.game.col3.sprites(), self.game.col4.sprites(), self.game.col5.sprites(), self.game.col6.sprites(), self.game.col7.sprites()]
-		allsprites =  pygame.sprite.LayeredUpdates((self.game.deckA, self.game.col1, self.game.col2, self.game.col3, self.game.col4, self.game.col5, self.game.col6, self.game.col7))
+		allsprites =  pygame.sprite.LayeredUpdates((self.game.col1, self.game.col2, self.game.col3, self.game.col4, self.game.col5, self.game.col6, self.game.col7))
 		allsprites.clear(self.screen, background)
 
 
@@ -63,31 +63,38 @@ class GUI:
 			#TEIKNA HLUTI
 			else:
 				self.screen.blit(background, backgroundRect)
-				rects = allsprites.draw(self.screen)
-				pygame.display.update(rects)
-
+				allsprites.draw(self.screen)
+				#pygame.display.update(rects)
 				self.update()
 
 				if event.type == MOUSEBUTTONDOWN:
 					self.MouseLPressed = True
-					for idx, card in enumerate(self.game.deckA):
+					for idx, card in enumerate(self.game.deckA.sprites()):
 						if card.clicked(event.pos):
 							if len(self.game.deckA.sprites()) > 0:
 								self.game.deckB.add(card)
-								self.game.deckA.remove(card)	
-								pygame.display.update(rects)			
-
+								self.game.deckA.remove(card)
+					for idx, col in enumerate(self.collumns):
+						for idx2, card in enumerate(col):
+							if card.selectable:
+								card.clicked(event.pos)
+								
 
 				if event.type == MOUSEBUTTONUP:
+					self.MouseLPressed = False
+					for idx, col in enumerate(self.collumns):
+						for idx2, card in enumerate(col):
+							if card.selected:
+								card.selected = False
+
 					self.set_up_deckB()
 					self.set_up_deckA()
-					self.MouseLPressed = False
 
 
 				if self.MouseLPressed == True:
 					for idx, col in enumerate(self.collumns):
 						for idx2, card in enumerate(col):
-							card.clicked(event.pos)
+							card.move(event.pos)
 
 
 
@@ -96,14 +103,14 @@ class GUI:
 
 	def update(self):
 		deckA = self.game.deckA.sprites()
-		deckB = self.game.deckB.sprites()
-		for idx, col in enumerate(self.collumns):
-			for idx2, card in enumerate(col):
-				card.dirty = 1
+		deckB = self.game.deckB
+		#for idx, col in enumerate(self.collumns):
+		#	for idx2, card in enumerate(col):
+		#		card.dirty = 1
 		for idx, card in enumerate(deckA):
-			card.dirty = 1
+			card.draw(self.screen)
 		for idx, card in enumerate(deckB):
-			card.dirty = 1
+			card.draw(self.screen)
 
 	def set_up_collumns(self):
 		col1 = self.game.col1.sprites()
@@ -141,12 +148,10 @@ class GUI:
 	def set_up_deckB(self):
 		x = 150
 		y = 300
-		layer = 100
-		deckB = self.game.deckB.sprites()
+		deckB = self.game.deckB
 		for card in deckB:
 			card.rect.x = x
 			card.rect.y = y
 			card.image = card.frontImg
 			card.selectable = False
-			self.layer = None
 			x += 10
