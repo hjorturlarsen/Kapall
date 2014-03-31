@@ -9,6 +9,7 @@ class Card(pygame.sprite.DirtySprite):
 		self._layer = 1
 		pygame.sprite.DirtySprite.__init__(self)
 		self.id = str(id)
+		self.rank = self.id[1:]
 		self.backImg = self.load_image('b')
 		self.frontImg = self.load_image(id)
 		self.image = self.backImg
