@@ -17,6 +17,7 @@ class Card(pygame.sprite.DirtySprite):
 		self.rect.y = 0
 		self.selected = False
 		self.selectable = False
+		self.layer = 1
 		
 		if (int(id[1:] == 13)):
 			self.parent = id[:1] + "1"
@@ -52,4 +53,5 @@ class Card(pygame.sprite.DirtySprite):
 
 	def clicked(self, pos):
 		if self.rect.collidepoint(pos):
-			print "click"
+			if self.selectable:
+				return True

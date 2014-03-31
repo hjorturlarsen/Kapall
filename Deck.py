@@ -6,8 +6,9 @@ import random
 import pygame
 from pygame import *
 
-class Deck:
+class Deck(pygame.sprite.DirtySprite):
 	def __init__(self):
+		pygame.sprite.DirtySprite.__init__(self)
 		self.deck = []
 		self.create_deck()
 		self.apply_images()
