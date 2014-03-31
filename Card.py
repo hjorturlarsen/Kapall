@@ -6,6 +6,7 @@ import os
 
 class Card(pygame.sprite.DirtySprite):
 	def __init__(self, id):
+		self._layer = 1
 		pygame.sprite.DirtySprite.__init__(self)
 		self.id = str(id)
 		self.backImg = self.load_image('b')

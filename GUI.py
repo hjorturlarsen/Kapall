@@ -19,7 +19,7 @@ class GUI:
 		self.game = Golf_relaxed()
 		
 		self.collumns = [self.game.col1.sprites(), self.game.col2.sprites(), self.game.col3.sprites(), self.game.col4.sprites(), self.game.col5.sprites(), self.game.col6.sprites(), self.game.col7.sprites()]
-		allsprites =  pygame.sprite.LayeredUpdates((self.game.col1, self.game.col2, self.game.col3, self.game.col4, self.game.col5, self.game.col6, self.game.col7))
+		allsprites =  pygame.sprite.LayeredUpdates((self.game.deckB, self.game.deckA, self.game.col1, self.game.col2, self.game.col3, self.game.col4, self.game.col5, self.game.col6, self.game.col7))
 		allsprites.clear(self.screen, background)
 
 
