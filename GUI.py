@@ -21,7 +21,6 @@ class GUI:
 		background = pygame.image.load("data/dolanbackground.png")
 		backgroundRect = background.get_rect()
 
-
 		self.game = Golf_relaxed()
 		
 		self.collumns = [self.game.col1.sprites(), self.game.col2.sprites(), self.game.col3.sprites(), self.game.col4.sprites(), self.game.col5.sprites(), self.game.col6.sprites(), self.game.col7.sprites()]
@@ -129,8 +128,6 @@ class GUI:
 					for idx, col in enumerate(self.collumns):
 						for idx2, card in enumerate(col):
 							card.move(event.pos)
-
-
 
 
 			pygame.display.flip()
