@@ -70,27 +70,25 @@ class GUI:
 
 				if event.type == MOUSEBUTTONDOWN:
 					self.MouseLPressed = True
+					for idx, card in enumerate(self.game.deckA):
+						if card.clicked(event.pos):
+							if len(self.game.deckA.sprites()) > 0:
+								self.game.deckB.add(card)
+								self.game.deckA.remove(card)							
 
 
 				if event.type == MOUSEBUTTONUP:
 					self.MouseLPressed = False
-					self.set_up_deckA()
 					self.set_up_deckB()
+					self.set_up_deckA()
 
 
 				if self.MouseLPressed == True:
 					for idx, col in enumerate(self.collumns):
 						for idx2, card in enumerate(col):
 							card.clicked(event.pos)
-					for idx, card in enumerate(self.game.deckA):
-						if card.clicked(event.pos):
-							if len(self.game.deckA.sprites()) > 0:
-								cardlist = self.game.deckA.sprites()
-								c = cardlist.pop()
-								
-								print c.id
-								#self.game.deckB.add(card)
-								#self.game.deckA.remove(card)
+
+
 
 
 			pygame.display.flip()
@@ -143,6 +141,7 @@ class GUI:
 		x = 150
 		y = 300
 		cards = ""
+
 		for card in self.game.deckB.sprites():
 			cards += card.id + " "
 			card.rect.x = x
@@ -150,5 +149,5 @@ class GUI:
 			card.image = card.frontImg
 			card.selectable = False
 			x += 10
-		#print cards
+		print cards
 

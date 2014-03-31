@@ -9,15 +9,15 @@ from pygame import *
 class Golf_relaxed:
 	def __init__(self):
 		self.deck = Deck()
-		self.deckA = pygame.sprite.Group()
-		self.deckB = pygame.sprite.Group()
-		self.col1 = pygame.sprite.Group()
-		self.col2 = pygame.sprite.Group()
-		self.col3 = pygame.sprite.Group()
-		self.col4 = pygame.sprite.Group()
-		self.col5 = pygame.sprite.Group()
-		self.col6 = pygame.sprite.Group()
-		self.col7 = pygame.sprite.Group()
+		self.deckA = pygame.sprite.OrderedUpdates()
+		self.deckB = pygame.sprite.OrderedUpdates()
+		self.col1 = pygame.sprite.OrderedUpdates()
+		self.col2 = pygame.sprite.OrderedUpdates()
+		self.col3 = pygame.sprite.OrderedUpdates()
+		self.col4 = pygame.sprite.OrderedUpdates()
+		self.col5 = pygame.sprite.OrderedUpdates()
+		self.col6 = pygame.sprite.OrderedUpdates()
+		self.col7 = pygame.sprite.OrderedUpdates()
 		self.set_up_game()
 		
 	def set_up_game(self):
