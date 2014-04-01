@@ -21,7 +21,7 @@ class GUI:
 		pygame.mouse.set_visible(1)
 		background = pygame.image.load("data/dolanbackground.png")
 		backgroundRect = background.get_rect()
-		self.font = pygame.font.Font(None, 36)
+		self.font = pygame.font.Font('data/menu_font.ttf', 40)
 
 		self.the_timeSec = 0.0
 		self.the_timeMin = 0.0
@@ -92,6 +92,7 @@ class GUI:
 
 				if event.type == MOUSEBUTTONUP:
 					self.MouseLPressed = False
+					last_in_deckB = self.game.deckB.sprites()[-1]
 
 					for idx, col in enumerate(self.collumns):
 						for idx2, card in enumerate(col):
@@ -99,37 +100,33 @@ class GUI:
 								card.selected = False
 
 								#Check if card from collumn collides with the last card in Deck B
-								last_in_deckB = self.game.deckB.sprites()[-1]
 								if pygame.sprite.collide_rect(card, last_in_deckB) and (last_in_deckB.child == int(card.rank) or last_in_deckB.parent == int(card.rank)):
-									self.game.deckB.add(card)
-									#remove card from collumn
-									col.pop()
-									#Make last cards in collumns selectable
-									self.selectable_collumns()
-									
-									# Each tima a player can remove more
-									# than 1 card from the board in a row the
-									# score will be multiplied be a higher number
-									self.score_multiplier += 1
+									self.game.deckB.add(card)	#add card to deck B
+									col.pop()					#remove card from collumn
+									self.selectable_collumns()	#Make last cards in collumns selectable
+						
+									self.score_multiplier += 1 	#Score multiplier, 
 									self.add_score(100+mathh.pow(self.score_multiplier, 4))
 
 								#For the wildcard
 								elif pygame.sprite.collide_rect(card, last_in_deckB) and last_in_deckB.id == 'W21':
-									col.pop()
-									self.selectable_collumns()
-									self.game.deckB.add(card)
-									self.add_score(5000)
+									self.game.deckB.add(card)	#add card to deck B
+									col.pop()					#remove card from collumn
+									self.selectable_collumns()	#Make last cards in collumns selectable
+									self.add_score(5000)		#Increase score, 5000 points
 								elif pygame.sprite.collide_rect(card, last_in_deckB) and card.id == 'W21':
-									col.pop()
-									self.selectable_collumns()
-									self.game.deckB.add(card)
-								#move card to it's original position
-								else:
+									self.game.deckB.add(card)	#add card to deck B
+									col.pop()					#remove card from collumn
+									self.selectable_collumns()	#Make last cards in collumns selectable
+								else:							#move card to it's original position
 									card.rect.x = self.old_pos[0]
 									card.rect.y = self.old_pos[1]
 
+					#Check if we have lost the game
 					if self.check_for_loss():
 						print "tapadi"
+
+					#Check if we have won the game and submit score and initials to database
 					if self.check_for_win():
 						time = str(self.the_timeMin) + " : " + str(int(self.the_timeSec%60))
 						if self.highscore_submitted == False:
@@ -137,14 +134,18 @@ class GUI:
 							self.highscore_submitted = True
 
 
-					self.set_up_deckB()
-					self.set_up_deckA()
+					self.set_up_deckB()		#Update deck B
+					self.set_up_deckA()		#Update deck A
 
+				#Move cards from collumns
 				if self.MouseLPressed == True:
 					for idx, col in enumerate(self.collumns):
 						for idx2, card in enumerate(col):
 							card.move(event.pos)
 
+				#If card collides with mouse-pointer, we get it's coordinates.
+				#So we can move it back to it's original position if the user
+				#tries an invalid move
 				if self.MouseLPressed == False:
 					for idx, col in enumerate(self.collumns):
 						for idx2, card in enumerate(col):
@@ -152,15 +153,12 @@ class GUI:
 								if card.rect.collidepoint(mouse.get_pos()):
 									self.old_pos = (card.rect.x, card.rect.y)
 
-
 			pygame.display.flip()
 
+	#Updates cards, time and score
 	def update(self):
 		deckA = self.game.deckA.sprites()
-		deckB = self.game.deckB
-		#for idx, col in enumerate(self.collumns):
-		#	for idx2, card in enumerate(col):
-		#		card.dirty = 1
+		deckB = self.game.deckB.sprites()
 		for idx, card in enumerate(deckA):
 			card.draw(self.screen)
 		for idx, card in enumerate(deckB):
@@ -170,6 +168,7 @@ class GUI:
 		self.screen.blit(self.textTime, self.textposTime)
 		self.screen.blit(self.text, self.textpos)
 
+	#Position cards in collumns
 	def set_up_collumns(self):
 		x = 50
 		for idx, col in enumerate(self.collumns):
@@ -181,11 +180,13 @@ class GUI:
 				y += 30
 			x += 100
 
+	#Sets the last cards in collums selectable
 	def selectable_collumns(self):
 		for idx, col in enumerate(self.collumns):
 			if len(col) > 0:
 				col[-1].selectable = True			
 
+	#Position cards in deck A
 	def set_up_deckA(self):
 		deckA = self.game.deckA.sprites()
 		x = 50
@@ -198,6 +199,7 @@ class GUI:
 		if len(deckA) > 0:
 			deckA[-1].selectable = True
 	
+	#Position cards in Deck B
 	def set_up_deckB(self):
 		x = 150
 		y = 300
@@ -208,6 +210,7 @@ class GUI:
 			card.image = card.frontImg
 			card.selectable = False
 			x += 10
+
 
 	def get_key(self):
 		while 1:
@@ -240,6 +243,8 @@ class GUI:
 			self.display_box(screen, question + ": " + current_string.upper())
 		return current_string.upper()
 
+	#True if deck A is empty and there is nothing we can do
+	#else False
 	def check_for_loss(self):
 		last_B = self.game.deckB.sprites()[-1]
 		for idx, col in enumerate(self.collumns):
@@ -256,23 +261,31 @@ class GUI:
 													return True
 		return False
 
+	#True if the collumns are empty
+	#else False
 	def check_for_win(self):
 		total_length = len(self.collumns[0]+self.collumns[1]+self.collumns[2]+self.collumns[3]+self.collumns[4]+self.collumns[5]+self.collumns[6])
-		if total_length == 30:
+		if total_length == 0:
 			return True
 		else:
 			return False
 
+	#Time
 	def update_time(self):
 		end = tm.time()
 		tm.sleep(0.01)
-		self.the_timeSec = end-self.start
-		self.the_timeMin = int(self.the_timeSec/60)
-		the_timeSec2 = int(self.the_timeSec % 60)
-		self.textTime = self.font.render("Time: %.0f : %.0f" % (self.the_timeMin, the_timeSec2), 1, (255, 255, 255))
+		the_timeSec = end-self.start
+		minutes = str(int(the_timeSec/60))
+		seconds = str(int(the_timeSec % 60))
+		if len(seconds) == 1:
+			seconds = "0"+seconds
+		if len(minutes) == 1:
+			minutes = "0"+minutes
+		self.textTime = self.font.render("Time: " + minutes + ":" + seconds, 1, (255, 255, 255))
 		self.textposTime = self.textTime.get_rect()
 		self.textposTime.center = (150, 475)
 
+	#Adds a number to the score
 	def add_score(self, number):
 		self.the_score += number
 		self.text = self.font.render("Score: %d" % (self.the_score), 1, (255, 255, 255))
