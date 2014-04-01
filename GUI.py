@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-
-
 #---------- SKIPUN TIL AÐ VISTA Í GAGNAGRUNN
 #HighScoreInsertion.insertHighscore(ident, initials, score, time)
 
@@ -16,12 +14,9 @@ import HighScoreInsertion
 class GUI:
 	def __init__(self):
 
-		global the_timeSec
-		the_timeSec = 0.0
-		global the_timeMin
-		the_timeMin = 0.0
-		global the_score 
-		the_score = 0
+		self.the_timeSec = 0.0
+		self.the_timeMin = 0.0
+		self.the_score = 0
 		score_multiplier = 0
 
 		pygame.init()
@@ -50,14 +45,14 @@ class GUI:
 
 		# Display score
 		font = pygame.font.Font(None, 36)
-		text = font.render("Score: %d" % (the_score), 1, (255, 255, 255))
+		text = font.render("Score: %d" % (self.the_score), 1, (255, 255, 255))
 		textpos = text.get_rect()
 		textpos.center = (700, 475)
 		self.screen.blit(text, textpos)
 
 		# Display time
 		start = tm.time()
-		textTime = font.render("Time: %.0f : %.0f" % (the_timeMin, the_timeSec), 1, (255, 255, 255))
+		textTime = font.render("Time: %.0f : %.0f" % (self.the_timeMin, self.the_timeSec), 1, (255, 255, 255))
 		textposTime = textTime.get_rect()
 		textposTime.center = (100, 475)
 		self.screen.blit(textTime, textposTime)
@@ -68,10 +63,10 @@ class GUI:
 			#Timi
 			end = tm.time()
 			tm.sleep(0.01)
-			the_timeSec = end-start
-			the_timeMin = int(the_timeSec/60)
-			the_timeSec2 = int(the_timeSec % 60)
-			textTime = font.render("Time: %.0f : %.0f" % (the_timeMin, the_timeSec2), 1, (255, 255, 255))
+			self.the_timeSec = end-start
+			self.the_timeMin = int(self.the_timeSec/60)
+			the_timeSec2 = int(self.the_timeSec % 60)
+			textTime = font.render("Time: %.0f : %.0f" % (self.the_timeMin, the_timeSec2), 1, (255, 255, 255))
 
 		# INPUT EVENTS
 			for event in pygame.event.get():
@@ -115,9 +110,9 @@ class GUI:
 
 							# 50 points if clicked on deck A
 							# and multiplier given the value 0
-							the_score += 50
+							self.the_score += 50
 							score_multiplier = 0
-							text = font.render("Score: %d" % (the_score), 1, (255, 255, 255))
+							text = font.render("Score: %d" % (self.the_score), 1, (255, 255, 255))
 					for idx, col in enumerate(self.collumns):
 						for idx2, card in enumerate(col):
 							if card.selectable:
@@ -131,16 +126,16 @@ class GUI:
 							#THARF AD LAGA FYRIR EFSTU LINU OG WILDCARD
 							last_B = self.game.deckB.sprites()[-1]
 							if len(self.game.deckA) == 0:
-								if (int(self.collumns[0][-1].rank) != last_B.child and int(self.collumns[0][-1].rank) != last_B.parent and int(self.collumns[0][-1].rank) != 21):
-									if (int(self.collumns[1][-1].rank) != last_B.child and int(self.collumns[1][-1].rank) != last_B.parent and int(self.collumns[0][-1].rank) != 21):
-										if (int(self.collumns[2][-1].rank) != last_B.child and int(self.collumns[2][-1].rank) != last_B.parent and int(self.collumns[0][-1].rank) != 21):
-											if (int(self.collumns[3][-1].rank) != last_B.child and int(self.collumns[3][-1].rank) != last_B.parent and int(self.collumns[0][-1].rank) != 21):
-												if (int(self.collumns[4][-1].rank) != last_B.child and int(self.collumns[4][-1].rank) != last_B.parent and int(self.collumns[0][-1].rank) != 21):
-													if (int(self.collumns[5][-1].rank) != last_B.child and int(self.collumns[5][-1].rank) != last_B.parent and int(self.collumns[0][-1].rank) != 21):
-														if (int(self.collumns[6][-1].rank) != last_B.child and int(self.collumns[6][-1].rank) != last_B.parent and int(self.collumns[0][-1].rank) != 21):
+								if int(last_B.rank) != 21:
+									if ((len(self.collumns[0]) == 0) or (int(self.collumns[0][-1].rank) != last_B.child and int(self.collumns[0][-1].rank) != last_B.parent) and int(self.collumns[0][-1].rank) != 21):
+										if ((len(self.collumns[1]) == 0) or (int(self.collumns[1][-1].rank) != last_B.child and int(self.collumns[1][-1].rank) != last_B.parent) and int(self.collumns[1][-1].rank) != 21):
+											if ((len(self.collumns[2]) == 0) or (int(self.collumns[2][-1].rank) != last_B.child and int(self.collumns[2][-1].rank) != last_B.parent) and int(self.collumns[2][-1].rank) != 21):
+												if ((len(self.collumns[3]) == 0) or (int(self.collumns[3][-1].rank) != last_B.child and int(self.collumns[3][-1].rank) != last_B.parent) and int(self.collumns[3][-1].rank) != 21):
+													if ((len(self.collumns[4]) == 0) or (int(self.collumns[4][-1].rank) != last_B.child and int(self.collumns[4][-1].rank) != last_B.parent) and int(self.collumns[4][-1].rank) != 21):
+														if ((len(self.collumns[5]) == 0) or (int(self.collumns[5][-1].rank) != last_B.child and int(self.collumns[5][-1].rank) != last_B.parent) and int(self.collumns[5][-1].rank) != 21):
+															if ((len(self.collumns[6]) == 0) or (int(self.collumns[6][-1].rank) != last_B.child and int(self.collumns[6][-1].rank) != last_B.parent) and int(self.collumns[6][-1].rank) != 21):
 
 																print "OMG EG TAPADI"
-																#print self.collumns[idx2][4]#.col[4]
 
 							##################################################
 							if card.selected:
@@ -157,15 +152,15 @@ class GUI:
 									# than 1 card from the board in a row the
 									# score will be multiplied be a higher number
 									score_multiplier += 1
-									the_score += 100 + math.pow(score_multiplier, 4)
-									text = font.render("Score: %d" % (the_score), 1, (255, 255, 255))
+									self.the_score += 100 + math.pow(score_multiplier, 4)
+									text = font.render("Score: %d" % (self.the_score), 1, (255, 255, 255))
 									# elif loops are for the wildcard
 								elif pygame.sprite.collide_rect(card, last_in_deckB) and last_in_deckB.id == 'W21':
 									col.pop()
 									self.selectable_collumns()
 									self.game.deckB.add(card)
-									the_score += 5000
-									text = font.render("Score: %d" % (the_score), 1, (255, 255, 255))
+									self.the_score += 5000
+									text = font.render("Score: %d" % (self.the_score), 1, (255, 255, 255))
 								elif pygame.sprite.collide_rect(card, last_in_deckB) and card.id == 'W21':
 									col.pop()
 									self.selectable_collumns()
@@ -228,9 +223,9 @@ class GUI:
 		dresl = len(self.collumns[0]+self.collumns[1]+self.collumns[2]+self.collumns[3]+self.collumns[4]+self.collumns[5]+self.collumns[6])
 		if dresl == 30:
 			print "Winner winner chicken dinner"
-			time_as_string = str(the_timeMin) + "." + str(int(the_timeSec%60))
+			time_as_string = str(self.the_timeMin) + "." + str(int(self.the_timeSec%60))
 			time_as_float = float(time_as_string)
-			print time_as_float, the_score
+			print time_as_float, self.the_score
 			print type(time_as_float)
 		###########
 
