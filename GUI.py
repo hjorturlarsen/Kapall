@@ -5,6 +5,8 @@
 #HighScoreInsertion.insertHighscore(ident, initials, score, time)
 
 import os, pygame, math, sys, random
+from random import randrange
+import math as mathh
 import time as tm
 from pygame import *
 import menu, GUI, Deck, Card, Golf_relaxed
@@ -25,6 +27,8 @@ class GUI:
 		pygame.mouse.set_visible(1)
 		background = pygame.image.load("data/dolanbackground.png")
 		backgroundRect = background.get_rect()
+
+		self.enter_highscore = False
 
 		self.game = Golf_relaxed()
 		
@@ -47,15 +51,15 @@ class GUI:
 		font = pygame.font.Font(None, 36)
 		text = font.render("Score: %d" % (self.the_score), 1, (255, 255, 255))
 		textpos = text.get_rect()
-		textpos.center = (700, 475)
+		textpos.center = (680, 475)
 		self.screen.blit(text, textpos)
 
 		# Display time
-		start = tm.time()
-		textTime = font.render("Time: %.0f : %.0f" % (self.the_timeMin, self.the_timeSec), 1, (255, 255, 255))
-		textposTime = textTime.get_rect()
-		textposTime.center = (100, 475)
-		self.screen.blit(textTime, textposTime)
+		self.start = tm.time()
+		#textTime = font.render("Time: %.0f : %.0f" % (self.the_timeMin, self.the_timeSec), 1, (255, 255, 255))
+		#textposTime = textTime.get_rect()
+		#textposTime.center = (100, 475)
+		#self.screen.blit(textTime, textposTime)
 
 		self.MouseLPressed = False
 		# MAINLOOP
@@ -63,7 +67,7 @@ class GUI:
 			#Timi
 			end = tm.time()
 			tm.sleep(0.01)
-			self.the_timeSec = end-start
+			self.the_timeSec = end-self.start
 			self.the_timeMin = int(self.the_timeSec/60)
 			the_timeSec2 = int(self.the_timeSec % 60)
 			textTime = font.render("Time: %.0f : %.0f" % (self.the_timeMin, the_timeSec2), 1, (255, 255, 255))
@@ -78,9 +82,11 @@ class GUI:
 				elif event.type == KEYDOWN and event.key == K_ESCAPE:
 					myMenu.activate()
 				elif event.type == menu.Menu.MENUCLICKEDEVENT:
-
 					#START AND INITIALIZE GAME
 					if event.item == 0:
+						self.start = tm.time()
+						textposTime = textTime.get_rect()
+						textposTime.center = (150, 475)
 						isGameActive = True
 						myMenu.deactivate()
 
@@ -122,22 +128,6 @@ class GUI:
 					self.MouseLPressed = False
 					for idx, col in enumerate(self.collumns):
 						for idx2, card in enumerate(col):
-							###LOOOSEERRR#####################################
-							#THARF AD LAGA FYRIR EFSTU LINU OG WILDCARD
-							last_B = self.game.deckB.sprites()[-1]
-							if len(self.game.deckA) == 0:
-								if int(last_B.rank) != 21:
-									if ((len(self.collumns[0]) == 0) or (int(self.collumns[0][-1].rank) != last_B.child and int(self.collumns[0][-1].rank) != last_B.parent) and int(self.collumns[0][-1].rank) != 21):
-										if ((len(self.collumns[1]) == 0) or (int(self.collumns[1][-1].rank) != last_B.child and int(self.collumns[1][-1].rank) != last_B.parent) and int(self.collumns[1][-1].rank) != 21):
-											if ((len(self.collumns[2]) == 0) or (int(self.collumns[2][-1].rank) != last_B.child and int(self.collumns[2][-1].rank) != last_B.parent) and int(self.collumns[2][-1].rank) != 21):
-												if ((len(self.collumns[3]) == 0) or (int(self.collumns[3][-1].rank) != last_B.child and int(self.collumns[3][-1].rank) != last_B.parent) and int(self.collumns[3][-1].rank) != 21):
-													if ((len(self.collumns[4]) == 0) or (int(self.collumns[4][-1].rank) != last_B.child and int(self.collumns[4][-1].rank) != last_B.parent) and int(self.collumns[4][-1].rank) != 21):
-														if ((len(self.collumns[5]) == 0) or (int(self.collumns[5][-1].rank) != last_B.child and int(self.collumns[5][-1].rank) != last_B.parent) and int(self.collumns[5][-1].rank) != 21):
-															if ((len(self.collumns[6]) == 0) or (int(self.collumns[6][-1].rank) != last_B.child and int(self.collumns[6][-1].rank) != last_B.parent) and int(self.collumns[6][-1].rank) != 21):
-
-																print "OMG EG TAPADI"
-
-							##################################################
 							if card.selected:
 								card.selected = False
 
@@ -152,7 +142,7 @@ class GUI:
 									# than 1 card from the board in a row the
 									# score will be multiplied be a higher number
 									score_multiplier += 1
-									self.the_score += 100 + math.pow(score_multiplier, 4)
+									self.the_score += 100 + mathh.pow(score_multiplier, 4)
 									text = font.render("Score: %d" % (self.the_score), 1, (255, 255, 255))
 									# elif loops are for the wildcard
 								elif pygame.sprite.collide_rect(card, last_in_deckB) and last_in_deckB.id == 'W21':
@@ -168,6 +158,17 @@ class GUI:
 								else:
 									card.rect.x = self.old_pos[0]
 									card.rect.y = self.old_pos[1]
+
+					if self.check_for_loss():
+						print "tapadi"
+					if self.check_for_win():
+						print "Winner winner chicken dinner"
+						time = str(self.the_timeMin) + " : " + str(int(self.the_timeSec%60))
+						print "Time: " + time + "\n" + "Score: " + str(self.the_score)
+						if self.enter_highscore == False:
+							HighScoreInsertion.insertHighscore(randrange(10000000) , self.ask(self.screen, "Name: "), str(self.the_score), time)
+							self.enter_highscore = True
+
 
 					self.set_up_deckB()
 					self.set_up_deckA()
@@ -216,20 +217,7 @@ class GUI:
 	def selectable_collumns(self):
 		for idx, col in enumerate(self.collumns):
 			if len(col) > 0:
-				col[-1].selectable = True
-		##WINNNNNERR
-		#Tharf ad lagfaera fyrir skor
-		dresl = 0
-		dresl = len(self.collumns[0]+self.collumns[1]+self.collumns[2]+self.collumns[3]+self.collumns[4]+self.collumns[5]+self.collumns[6])
-		if dresl == 30:
-			print "Winner winner chicken dinner"
-			time_as_string = str(self.the_timeMin) + "." + str(int(self.the_timeSec%60))
-			time_as_float = float(time_as_string)
-			print time_as_float, self.the_score
-			print type(time_as_float)
-		###########
-
-			
+				col[-1].selectable = True			
 
 	def set_up_deckA(self):
 		deckA = self.game.deckA.sprites()
@@ -284,3 +272,26 @@ class GUI:
 				current_string = current_string + chr(inkey)
 			self.display_box(screen, question + ": " + current_string.upper())
 		return current_string.upper()
+
+	def check_for_loss(self):
+		last_B = self.game.deckB.sprites()[-1]
+		for idx, col in enumerate(self.collumns):
+			for idx2, card in enumerate(col):
+				if len(self.game.deckA) == 0:
+					if int(last_B.rank) != 21:
+						if ((len(self.collumns[0]) == 0) or (int(self.collumns[0][-1].rank) != last_B.child and int(self.collumns[0][-1].rank) != last_B.parent) and int(self.collumns[0][-1].rank) != 21):
+							if ((len(self.collumns[1]) == 0) or (int(self.collumns[1][-1].rank) != last_B.child and int(self.collumns[1][-1].rank) != last_B.parent) and int(self.collumns[1][-1].rank) != 21):
+								if ((len(self.collumns[2]) == 0) or (int(self.collumns[2][-1].rank) != last_B.child and int(self.collumns[2][-1].rank) != last_B.parent) and int(self.collumns[2][-1].rank) != 21):
+									if ((len(self.collumns[3]) == 0) or (int(self.collumns[3][-1].rank) != last_B.child and int(self.collumns[3][-1].rank) != last_B.parent) and int(self.collumns[3][-1].rank) != 21):
+										if ((len(self.collumns[4]) == 0) or (int(self.collumns[4][-1].rank) != last_B.child and int(self.collumns[4][-1].rank) != last_B.parent) and int(self.collumns[4][-1].rank) != 21):
+											if ((len(self.collumns[5]) == 0) or (int(self.collumns[5][-1].rank) != last_B.child and int(self.collumns[5][-1].rank) != last_B.parent) and int(self.collumns[5][-1].rank) != 21):
+												if ((len(self.collumns[6]) == 0) or (int(self.collumns[6][-1].rank) != last_B.child and int(self.collumns[6][-1].rank) != last_B.parent) and int(self.collumns[6][-1].rank) != 21):
+													return True
+		return False
+
+	def check_for_win(self):
+		total_length = len(self.collumns[0]+self.collumns[1]+self.collumns[2]+self.collumns[3]+self.collumns[4]+self.collumns[5]+self.collumns[6])
+		if total_length == 30:
+			return True
+		else:
+			return False
