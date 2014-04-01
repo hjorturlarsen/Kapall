@@ -12,8 +12,8 @@ class MenuItem (pygame.font.Font):
     '''
     The Menu Item should be derived from the pygame Font class
     '''
-    def __init__(self, text, position, fontSize=36, antialias=1, color=(255, 255, 255), background=None):
-        pygame.font.Font.__init__(self, None, fontSize)
+    def __init__(self, text, position, fontSize=55, antialias=1, color=(255, 255, 255), background=None):
+        pygame.font.Font.__init__(self, 'data/menu_font.ttf', fontSize)
         self.text = text
         if background == None:
             self.textSurface = self.render(self.text, antialias, (255, 255, 255))
@@ -48,7 +48,7 @@ class Menu:
         self.area = screen.get_rect()
         self.background = pygame.Surface(screen.get_size())
         self.background = self.background.convert()
-        self.background_image = pygame.image.load("data/dolanbackground.png")
+        self.background_image = pygame.image.load("data/start_background.png")
         self.backgroundRect = self.background_image.get_rect()
         self.background.blit(self.background_image, self.backgroundRect)
 

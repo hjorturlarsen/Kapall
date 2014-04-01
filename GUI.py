@@ -29,6 +29,7 @@ class GUI:
 		self.score_multiplier = 0
 		self.highscore_submitted = False
 		self.old_pos = None
+		self.time = None
 
 		self.game = Golf_relaxed()
 		self.collumns = [self.game.col1.sprites(), self.game.col2.sprites(), self.game.col3.sprites(), self.game.col4.sprites(), self.game.col5.sprites(), self.game.col6.sprites(), self.game.col7.sprites()]
@@ -51,6 +52,8 @@ class GUI:
 					return
 				elif event.type == KEYDOWN and event.key == K_ESCAPE:
 					myMenu.activate()
+				elif event.type == KEYDOWN and event.key == K_h:
+					self.highscore_box(self.screen)
 				elif event.type == menu.Menu.MENUCLICKEDEVENT:
 					#START AND INITIALIZE GAME
 					if event.item == 0:
@@ -128,7 +131,7 @@ class GUI:
 
 					#Check if we have won the game and submit score and initials to database
 					if self.check_for_win():
-						time = str(self.the_timeMin) + " : " + str(int(self.the_timeSec%60))
+						time = self.time
 						if self.highscore_submitted == False:
 							HighScoreInsertion.insertHighscore(randrange(10000000) , self.ask(self.screen, "Name: "), str(self.the_score), time)
 							self.highscore_submitted = True
@@ -228,6 +231,30 @@ class GUI:
 			screen.blit(fontobject.render(message, 1, (255,255,255)),((screen.get_width() / 2) - 100, (screen.get_height() / 2) +144))
 		pygame.display.flip()
 
+	def highscore_box(self, screen):
+		f = open('highscore.txt', 'r').read().split()
+		fontHigh = pygame.font.Font(None,34)
+		fontobject = pygame.font.Font('data/menu_font.ttf',26)
+		pygame.draw.rect(screen, (0,0,0),((screen.get_width() / 2) - 160,(screen.get_height() / 2) - 200,300,400), 0)
+		pygame.draw.rect(screen, (255,255,255),((screen.get_width() / 2) - 160,(screen.get_height() / 2) - 200,300,400), 1)
+		###################
+		screen.blit(fontHigh.render("HIGHSCORE", 1, (85,13,179)),((screen.get_width() / 2)-80, (screen.get_height() / 2) - 194))
+		count = 0
+		for i in range(len(f)-1):
+			if i == 0:
+				lina = f[count] + "  " + f[count+1] + "  " + f[count+2] + "  " + f[count+3] + f[count+4] + f[count+5]
+				screen.blit(fontobject.render(lina, 1, (255,255,255)),((screen.get_width() / 2) - 130, (screen.get_height() / 2) - 132 + count*3))
+			if i % 6 == 0 and i != 0:
+				count += 6
+				lina = f[count] + "  " + f[count+1] + "  " + f[count+2] + "  " + f[count+3] + f[count+4] + f[count+5]
+				screen.blit(fontobject.render(lina, 1, (255,255,255)),((screen.get_width() / 2) - 130, (screen.get_height() / 2) - 132 + count*3))
+		###################
+		pygame.display.flip()
+		while 1:
+			inkey = self.get_key()
+			if inkey == K_h:
+				break
+
 	def ask(self, screen, question):
 		pygame.font.init()
 		current_string = ""
@@ -265,7 +292,7 @@ class GUI:
 	#else False
 	def check_for_win(self):
 		total_length = len(self.collumns[0]+self.collumns[1]+self.collumns[2]+self.collumns[3]+self.collumns[4]+self.collumns[5]+self.collumns[6])
-		if total_length == 0:
+		if total_length == 30:
 			return True
 		else:
 			return False
@@ -281,7 +308,10 @@ class GUI:
 			seconds = "0"+seconds
 		if len(minutes) == 1:
 			minutes = "0"+minutes
-		self.textTime = self.font.render("Time: " + minutes + ":" + seconds, 1, (255, 255, 255))
+
+		self.time = minutes + " : " + seconds
+		timedisp = minutes + ":" + seconds
+		self.textTime = self.font.render("Time: " + timedisp, 1, (255, 255, 255))
 		self.textposTime = self.textTime.get_rect()
 		self.textposTime.center = (150, 475)
 
