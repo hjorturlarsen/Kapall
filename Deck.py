@@ -24,6 +24,7 @@ class Deck(pygame.sprite.DirtySprite):
 		for s in suit:
 			for r in rank:
 				self.deck.append(s+`r`)
+		self.deck.append('W21')
 		return self.deck
 
 	def shuffle_deck(self):

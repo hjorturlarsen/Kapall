@@ -109,6 +109,7 @@ class GUI:
 							if len(self.game.deckA.sprites()) > 0:
 								self.game.deckB.add(card)
 								self.game.deckA.remove(card)
+
 							# 50 points if clicked on deck A
 							# and multiplier given the value 0
 							the_score += 50
@@ -125,6 +126,7 @@ class GUI:
 						for idx2, card in enumerate(col):
 							if card.selected:
 								card.selected = False
+								print card.rank
 
 								#Collision Detection
 								last_in_deckB = self.game.deckB.sprites()[-1]
@@ -132,12 +134,24 @@ class GUI:
 									self.game.deckB.add(card)
 									col.pop()
 									self.selectable_collumns()
+									
 									# Each tima a player can remove more
 									# than 1 card from the board in a row the
 									# score will be multiplied be a higher number
 									score_multiplier += 1
 									the_score += 100 + math.pow(score_multiplier, 4)
 									text = font.render("Score: %d" % (the_score), 1, (255, 255, 255))
+									# elif loops are for the wildcard
+								elif pygame.sprite.collide_rect(card, last_in_deckB) and last_in_deckB.id == 'W21':
+									col.pop()
+									self.selectable_collumns()
+									self.game.deckB.add(card)
+									the_score += 5000
+									text = font.render("Score: %d" % (the_score), 1, (255, 255, 255))
+								elif pygame.sprite.collide_rect(card, last_in_deckB) and card.id == 'W21':
+									col.pop()
+									self.selectable_collumns()
+									self.game.deckB.add(card)
 								else:
 									card.rect.x = self.old_pos[0]
 									card.rect.y = self.old_pos[1]
