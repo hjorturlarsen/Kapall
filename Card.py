@@ -43,6 +43,8 @@ class Card(pygame.sprite.DirtySprite):
 			print 'Cannot load image:', name
 			raise SystemExit, message
 		image = image.convert()
+		transColor = image.get_at((0,0))
+		image.set_colorkey(transColor)
 		if colorkey is not None:
 			if colorkey is -1:
 				colorkey = image.get_at((0,0))
