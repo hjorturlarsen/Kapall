@@ -16,8 +16,11 @@ import HighScoreInsertion
 class GUI:
 	def __init__(self):
 
+		global the_timeSec
 		the_timeSec = 0.0
+		global the_timeMin
 		the_timeMin = 0.0
+		global the_score 
 		the_score = 0
 		score_multiplier = 0
 
@@ -124,9 +127,24 @@ class GUI:
 					self.MouseLPressed = False
 					for idx, col in enumerate(self.collumns):
 						for idx2, card in enumerate(col):
+							###LOOOSEERRR#####################################
+							#THARF AD LAGA FYRIR EFSTU LINU OG WILDCARD
+							last_B = self.game.deckB.sprites()[-1]
+							if len(self.game.deckA) == 0:
+								if (int(self.collumns[0][-1].rank) != last_B.child and int(self.collumns[0][-1].rank) != last_B.parent and int(self.collumns[0][-1].rank) != 21):
+									if (int(self.collumns[1][-1].rank) != last_B.child and int(self.collumns[1][-1].rank) != last_B.parent and int(self.collumns[0][-1].rank) != 21):
+										if (int(self.collumns[2][-1].rank) != last_B.child and int(self.collumns[2][-1].rank) != last_B.parent and int(self.collumns[0][-1].rank) != 21):
+											if (int(self.collumns[3][-1].rank) != last_B.child and int(self.collumns[3][-1].rank) != last_B.parent and int(self.collumns[0][-1].rank) != 21):
+												if (int(self.collumns[4][-1].rank) != last_B.child and int(self.collumns[4][-1].rank) != last_B.parent and int(self.collumns[0][-1].rank) != 21):
+													if (int(self.collumns[5][-1].rank) != last_B.child and int(self.collumns[5][-1].rank) != last_B.parent and int(self.collumns[0][-1].rank) != 21):
+														if (int(self.collumns[6][-1].rank) != last_B.child and int(self.collumns[6][-1].rank) != last_B.parent and int(self.collumns[0][-1].rank) != 21):
+
+																print "OMG EG TAPADI"
+																#print self.collumns[idx2][4]#.col[4]
+
+							##################################################
 							if card.selected:
 								card.selected = False
-								print card.rank
 
 								#Collision Detection
 								last_in_deckB = self.game.deckB.sprites()[-1]
@@ -204,6 +222,18 @@ class GUI:
 		for idx, col in enumerate(self.collumns):
 			if len(col) > 0:
 				col[-1].selectable = True
+		##WINNNNNERR
+		#Tharf ad lagfaera fyrir skor
+		dresl = 0
+		dresl = len(self.collumns[0]+self.collumns[1]+self.collumns[2]+self.collumns[3]+self.collumns[4]+self.collumns[5]+self.collumns[6])
+		if dresl == 30:
+			print "Winner winner chicken dinner"
+			time_as_string = str(the_timeMin) + "." + str(int(the_timeSec%60))
+			time_as_float = float(time_as_string)
+			print time_as_float, the_score
+			print type(time_as_float)
+		###########
+
 			
 
 	def set_up_deckA(self):
