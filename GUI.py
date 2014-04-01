@@ -16,9 +16,13 @@ import HighScoreInsertion
 class GUI:
 	def __init__(self):
 
+		global the_timeSec
 		the_timeSec = 0.0
+		global the_timeMin
 		the_timeMin = 0.0
+		global the_score 
 		the_score = 0
+		score_multiplier = 0
 
 		pygame.init()
 		self.screen = pygame.display.set_mode((800, 500))
@@ -108,21 +112,37 @@ class GUI:
 							if len(self.game.deckA.sprites()) > 0:
 								self.game.deckB.add(card)
 								self.game.deckA.remove(card)
-							#50 points if clicked on deck A
+
+							# 50 points if clicked on deck A
+							# and multiplier given the value 0
 							the_score += 50
+							score_multiplier = 0
 							text = font.render("Score: %d" % (the_score), 1, (255, 255, 255))
 					for idx, col in enumerate(self.collumns):
 						for idx2, card in enumerate(col):
 							if card.selectable:
 								card.clicked(event.pos)
-							#if card.selected:
-								#self.old_pos = (card.rect.x, card.rect.y)
-								#print self.old_pos
 
 				if event.type == MOUSEBUTTONUP:
 					self.MouseLPressed = False
 					for idx, col in enumerate(self.collumns):
 						for idx2, card in enumerate(col):
+							###LOOOSEERRR#####################################
+							#THARF AD LAGA FYRIR EFSTU LINU OG WILDCARD
+							last_B = self.game.deckB.sprites()[-1]
+							if len(self.game.deckA) == 0:
+								if (int(self.collumns[0][-1].rank) != last_B.child and int(self.collumns[0][-1].rank) != last_B.parent and int(self.collumns[0][-1].rank) != 21):
+									if (int(self.collumns[1][-1].rank) != last_B.child and int(self.collumns[1][-1].rank) != last_B.parent and int(self.collumns[0][-1].rank) != 21):
+										if (int(self.collumns[2][-1].rank) != last_B.child and int(self.collumns[2][-1].rank) != last_B.parent and int(self.collumns[0][-1].rank) != 21):
+											if (int(self.collumns[3][-1].rank) != last_B.child and int(self.collumns[3][-1].rank) != last_B.parent and int(self.collumns[0][-1].rank) != 21):
+												if (int(self.collumns[4][-1].rank) != last_B.child and int(self.collumns[4][-1].rank) != last_B.parent and int(self.collumns[0][-1].rank) != 21):
+													if (int(self.collumns[5][-1].rank) != last_B.child and int(self.collumns[5][-1].rank) != last_B.parent and int(self.collumns[0][-1].rank) != 21):
+														if (int(self.collumns[6][-1].rank) != last_B.child and int(self.collumns[6][-1].rank) != last_B.parent and int(self.collumns[0][-1].rank) != 21):
+
+																print "OMG EG TAPADI"
+																#print self.collumns[idx2][4]#.col[4]
+
+							##################################################
 							if card.selected:
 								card.selected = False
 
@@ -132,8 +152,24 @@ class GUI:
 									self.game.deckB.add(card)
 									col.pop()
 									self.selectable_collumns()
-									the_score += 99
+									
+									# Each tima a player can remove more
+									# than 1 card from the board in a row the
+									# score will be multiplied be a higher number
+									score_multiplier += 1
+									the_score += 100 + math.pow(score_multiplier, 4)
 									text = font.render("Score: %d" % (the_score), 1, (255, 255, 255))
+									# elif loops are for the wildcard
+								elif pygame.sprite.collide_rect(card, last_in_deckB) and last_in_deckB.id == 'W21':
+									col.pop()
+									self.selectable_collumns()
+									self.game.deckB.add(card)
+									the_score += 5000
+									text = font.render("Score: %d" % (the_score), 1, (255, 255, 255))
+								elif pygame.sprite.collide_rect(card, last_in_deckB) and card.id == 'W21':
+									col.pop()
+									self.selectable_collumns()
+									self.game.deckB.add(card)
 								else:
 									card.rect.x = self.old_pos[0]
 									card.rect.y = self.old_pos[1]
@@ -184,9 +220,20 @@ class GUI:
 
 	def selectable_collumns(self):
 		for idx, col in enumerate(self.collumns):
-			print len(col)
 			if len(col) > 0:
 				col[-1].selectable = True
+		##WINNNNNERR
+		#Tharf ad lagfaera fyrir skor
+		dresl = 0
+		dresl = len(self.collumns[0]+self.collumns[1]+self.collumns[2]+self.collumns[3]+self.collumns[4]+self.collumns[5]+self.collumns[6])
+		if dresl == 30:
+			print "Winner winner chicken dinner"
+			time_as_string = str(the_timeMin) + "." + str(int(the_timeSec%60))
+			time_as_float = float(time_as_string)
+			print time_as_float, the_score
+			print type(time_as_float)
+		###########
+
 			
 
 	def set_up_deckA(self):

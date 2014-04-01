@@ -21,7 +21,7 @@ class Golf_relaxed:
 		self.set_up_game()
 		
 	def set_up_game(self):
-		for i in range(0,16):
+		for i in range(0,17):
 			self.deckA.add(self.deck.get())
 		for i in range(0,5):
 			self.col1.add(self.deck.get())
