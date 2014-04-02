@@ -19,8 +19,8 @@ class GUI:
 		self.screen = pygame.display.set_mode((800, 500))
 		pygame.display.set_caption('Gooby plz')
 		pygame.mouse.set_visible(1)
-		background = pygame.image.load("data/dolanbackground.png")
-		backgroundRect = background.get_rect()
+		self.background = pygame.image.load("data/dolanbackground.png")
+		self.backgroundRect = self.background.get_rect()
 		self.font = pygame.font.Font('data/menu_font.ttf', 40)
 
 		self.the_timeSec = 0.0
@@ -31,6 +31,7 @@ class GUI:
 		self.old_pos = None
 		self.time = None
 		self.game_lost = False
+		self.game_won = False
 
 		self.game = Golf_relaxed()
 		self.collumns = [self.game.col1.sprites(), self.game.col2.sprites(), self.game.col3.sprites(), self.game.col4.sprites(), self.game.col5.sprites(), self.game.col6.sprites(), self.game.col7.sprites()]
@@ -75,7 +76,7 @@ class GUI:
 
 			#TEIKNA HLUTI
 			else:
-				self.screen.blit(background, backgroundRect)
+				self.screen.blit(self.background, self.backgroundRect)
 				self.update()
 
 				if event.type == MOUSEBUTTONDOWN:
@@ -137,12 +138,18 @@ class GUI:
 
 					#Check if we have won the game and submit score and initials to database
 					if self.check_for_win():
+						self.game_won = True
+						self.fontLose = pygame.font.Font('data/menu_font.ttf', 200)
+						self.textLose = self.fontLose.render("YU WIN", 1, (255,0,0))
+						self.LosePos = self.textLose.get_rect()
+						self.LosePos.center = (400, 250)
+						self.update()
 						time = self.time
-						self.screen.blit(background, backgroundRect)
 						if self.highscore_submitted == False:
 							HighScoreInsertion.insertHighscore(randrange(10000000) , self.ask(self.screen, "Name: "), str(self.the_score), time)
 							self.highscore_submitted = True
 							self.new_game()
+							#self.new_game()
 
 					self.set_up_deckB()		#Update deck B
 					self.set_up_deckA()		#Update deck A
@@ -181,6 +188,10 @@ class GUI:
 			self.screen.blit(self.textTime, self.textposTime)
 		if self.game_lost == True:
 			self.screen.blit(self.textLose, self.LosePos)
+		if self.game_won == True:
+			self.screen.blit(self.background, self.backgroundRect)
+			self.screen.blit(self.textLose, self.LosePos)
+
 
 	#Position cards in collumns
 	def set_up_collumns(self):
@@ -327,7 +338,7 @@ class GUI:
 	#else False
 	def check_for_win(self):
 		total_length = len(self.collumns[0]+self.collumns[1]+self.collumns[2]+self.collumns[3]+self.collumns[4]+self.collumns[5]+self.collumns[6])
-		if total_length == 0:
+		if total_length == 25:
 			return True
 		else:
 			return False
@@ -366,6 +377,7 @@ class GUI:
 		self.old_pos = None
 		self.time = None
 		self.game_lost = False
+		self.game_won = False
 
 		self.game = Golf_relaxed()
 		self.collumns = [self.game.col1.sprites(), self.game.col2.sprites(), self.game.col3.sprites(), self.game.col4.sprites(), self.game.col5.sprites(), self.game.col6.sprites(), self.game.col7.sprites()]
