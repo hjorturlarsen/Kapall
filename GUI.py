@@ -344,7 +344,7 @@ class GUI:
 	#else False
 	def check_for_win(self):
 		total_length = len(self.collumns[0]+self.collumns[1]+self.collumns[2]+self.collumns[3]+self.collumns[4]+self.collumns[5]+self.collumns[6])
-		if total_length == 33:
+		if total_length == 0:
 			return True
 		else:
 			return False
