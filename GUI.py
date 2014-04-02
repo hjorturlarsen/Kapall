@@ -54,6 +54,8 @@ class GUI:
 					myMenu.activate()
 				elif event.type == KEYDOWN and event.key == K_h:
 					self.highscore_box(self.screen)
+				elif event.type == KEYDOWN and event.key == K_i:
+					self.instruction_box(self.screen)
 				elif event.type == menu.Menu.MENUCLICKEDEVENT:
 					#START AND INITIALIZE GAME
 					if event.item == 0:
@@ -238,21 +240,48 @@ class GUI:
 		pygame.draw.rect(screen, (0,0,0),((screen.get_width() / 2) - 160,(screen.get_height() / 2) - 200,300,400), 0)
 		pygame.draw.rect(screen, (255,255,255),((screen.get_width() / 2) - 160,(screen.get_height() / 2) - 200,300,400), 1)
 		###################
-		screen.blit(fontHigh.render("HIGHSCORE", 1, (85,13,179)),((screen.get_width() / 2)-80, (screen.get_height() / 2) - 194))
+		screen.blit(fontHigh.render("HISKOR", 1, (85,13,179)),((screen.get_width() / 2)-50, (screen.get_height() / 2) - 184))
 		count = 0
+		bil = "   "
 		for i in range(len(f)-1):
 			if i == 0:
-				lina = f[count] + "  " + f[count+1] + "  " + f[count+2] + "  " + f[count+3] + f[count+4] + f[count+5]
+				lina = f[count] + bil + f[count+1] + "  " + f[count+3] + f[count+4] + f[count+5] + "  " + f[count+2]
 				screen.blit(fontobject.render(lina, 1, (255,255,255)),((screen.get_width() / 2) - 130, (screen.get_height() / 2) - 132 + count*3))
 			if i % 6 == 0 and i != 0:
 				count += 6
-				lina = f[count] + "  " + f[count+1] + "  " + f[count+2] + "  " + f[count+3] + f[count+4] + f[count+5]
+				if len(f[count]) == 3:
+					bil = "  "
+				lina = f[count] + bil + f[count+1] + "  " + f[count+3] + f[count+4] + f[count+5] + "  " + f[count+2]
 				screen.blit(fontobject.render(lina, 1, (255,255,255)),((screen.get_width() / 2) - 130, (screen.get_height() / 2) - 132 + count*3))
 		###################
 		pygame.display.flip()
 		while 1:
 			inkey = self.get_key()
 			if inkey == K_h:
+				break
+
+	def instruction_box(self, screen):
+		f = open('help.txt', 'r').read().split()
+		fontInstructions = pygame.font.Font(None,34)
+		fontobject = pygame.font.Font('data/menu_font.ttf',26)
+		pygame.draw.rect(screen, (0,0,0),((screen.get_width() / 2) - 300,(screen.get_height() / 2) - 200,600,300), 0)
+		pygame.draw.rect(screen, (255,255,255),((screen.get_width() / 2) - 300,(screen.get_height() / 2) - 200,600,300), 1)
+		###################
+		screen.blit(fontInstructions.render("HALP", 1, (85,13,179)),((screen.get_width() / 2)-40, (screen.get_height() / 2) - 184))
+		count = 0
+		lina = ""
+		for i in range(len(f)-1):
+			if f[i] != "z":
+				lina = lina + f[i] + " "
+			else:
+				screen.blit(fontobject.render(lina, 1, (255,255,255)),((screen.get_width() / 2) - 270, (screen.get_height() / 2) - 132 + count*3))
+				lina = ""
+				count += 6
+		###################
+		pygame.display.flip()
+		while 1:
+			inkey = self.get_key()
+			if inkey == K_i:
 				break
 
 	def ask(self, screen, question):
