@@ -139,8 +139,8 @@ class GUI:
 					#Check if we have won the game and submit score and initials to database
 					if self.check_for_win():
 						self.game_won = True
-						self.fontLose = pygame.font.Font('data/menu_font.ttf', 200)
-						self.textLose = self.fontLose.render("YU WIN", 1, (255,0,0))
+						self.fontLose = pygame.font.Font('data/menu_font.ttf', 100)
+						self.textLose = self.fontLose.render("Score: " + str(int(self.the_score)), 1, (255,0,0))
 						self.LosePos = self.textLose.get_rect()
 						self.LosePos.center = (400, 250)
 						self.update()
@@ -338,7 +338,7 @@ class GUI:
 	#else False
 	def check_for_win(self):
 		total_length = len(self.collumns[0]+self.collumns[1]+self.collumns[2]+self.collumns[3]+self.collumns[4]+self.collumns[5]+self.collumns[6])
-		if total_length == 25:
+		if total_length == 33:
 			return True
 		else:
 			return False
