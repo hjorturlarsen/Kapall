@@ -30,6 +30,7 @@ class GUI:
 		self.highscore_submitted = False
 		self.old_pos = None
 		self.time = None
+		self.game_lost = False
 
 		self.game = Golf_relaxed()
 		self.collumns = [self.game.col1.sprites(), self.game.col2.sprites(), self.game.col3.sprites(), self.game.col4.sprites(), self.game.col5.sprites(), self.game.col6.sprites(), self.game.col7.sprites()]
@@ -50,8 +51,6 @@ class GUI:
 				# QUIT TO MENU
 				if event.type == QUIT:
 					return
-				elif event.type == KEYDOWN and event.key == K_ESCAPE:
-					self.myMenu.activate()
 				elif event.type == KEYDOWN and event.key == K_h:
 					self.highscore_box(self.screen)
 				elif event.type == KEYDOWN and event.key == K_n:
@@ -130,7 +129,11 @@ class GUI:
 									card.rect.y = self.old_pos[1]
 					#Check if we have lost the game
 					if self.check_for_loss():
-						print "tapadi"
+						self.game_lost = True
+						self.fontLose = pygame.font.Font('data/menu_font.ttf', 200)
+						self.textLose = self.fontLose.render("YU SUK", 1, (255,0,0))
+						self.LosePos = self.textLose.get_rect()
+						self.LosePos.center = (400, 250)
 
 					#Check if we have won the game and submit score and initials to database
 					if self.check_for_win():
@@ -140,7 +143,6 @@ class GUI:
 							HighScoreInsertion.insertHighscore(randrange(10000000) , self.ask(self.screen, "Name: "), str(self.the_score), time)
 							self.highscore_submitted = True
 							self.new_game()
-							self.highscore_box(self.screen)
 
 					self.set_up_deckB()		#Update deck B
 					self.set_up_deckA()		#Update deck A
@@ -165,17 +167,20 @@ class GUI:
 
 	#Updates cards, time and score
 	def update(self):
-		deckA = self.game.deckA.sprites()
-		deckB = self.game.deckB.sprites()
-		self.allsprites.draw(self.screen)
-		for idx, card in enumerate(deckA):
-			card.draw(self.screen)
-		for idx, card in enumerate(deckB):
-			card.draw(self.screen)
+		if self.game_lost == False:
+			deckA = self.game.deckA.sprites()
+			deckB = self.game.deckB.sprites()
+			self.allsprites.draw(self.screen)
+			for idx, card in enumerate(deckA):
+				card.draw(self.screen)
+			for idx, card in enumerate(deckB):
+				card.draw(self.screen)
 
-		self.update_time()
-		self.screen.blit(self.text, self.textpos)
-		self.screen.blit(self.textTime, self.textposTime)
+			self.update_time()
+			self.screen.blit(self.text, self.textpos)
+			self.screen.blit(self.textTime, self.textposTime)
+		if self.game_lost == True:
+			self.screen.blit(self.textLose, self.LosePos)
 
 	#Position cards in collumns
 	def set_up_collumns(self):
