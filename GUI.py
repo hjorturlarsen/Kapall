@@ -140,6 +140,7 @@ class GUI:
 							HighScoreInsertion.insertHighscore(randrange(10000000) , self.ask(self.screen, "Name: "), str(self.the_score), time)
 							self.highscore_submitted = True
 							self.new_game()
+							self.highscore_box(self.screen)
 
 					self.set_up_deckB()		#Update deck B
 					self.set_up_deckA()		#Update deck A
