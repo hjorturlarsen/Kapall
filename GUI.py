@@ -139,6 +139,11 @@ class GUI:
 					#Check if we have won the game and submit score and initials to database
 					if self.check_for_win():
 						self.game_won = True
+						self.fontWinner = pygame.font.Font('data/menu_font.ttf', 150)
+						self.textWinner = self.fontWinner.render("YU WON!", 1, (255, 0, 0))
+						self.WinnerPos = self.textWinner.get_rect()
+						self.WinnerPos.center = (415, 150)
+
 						self.fontLose = pygame.font.Font('data/menu_font.ttf', 100)
 						self.textLose = self.fontLose.render("Score: " + str(int(self.the_score)), 1, (255,0,0))
 						self.LosePos = self.textLose.get_rect()
@@ -146,7 +151,7 @@ class GUI:
 						self.update()
 						time = self.time
 						if self.highscore_submitted == False:
-							HighScoreInsertion.insertHighscore(randrange(10000000) , self.ask(self.screen, "Name: "), str(self.the_score), time)
+							HighScoreInsertion.insertHighscore(randrange(10000000) , self.ask(self.screen, "Name"), str(self.the_score), time)
 							self.highscore_submitted = True
 							self.new_game()
 							#self.new_game()
@@ -191,6 +196,7 @@ class GUI:
 		if self.game_won == True:
 			self.screen.blit(self.background, self.backgroundRect)
 			self.screen.blit(self.textLose, self.LosePos)
+			self.screen.blit(self.textWinner, self.WinnerPos)
 
 
 	#Position cards in collumns
