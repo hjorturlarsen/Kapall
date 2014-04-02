@@ -88,6 +88,7 @@ class GUI:
 							if len(self.game.deckA.sprites()) > 0:
 								self.game.deckB.add(card)
 								self.game.deckA.remove(card)
+								self.score_multiplier = 0
 							self.add_score(50)
 
 					#Select card from collumn
@@ -139,6 +140,9 @@ class GUI:
 							HighScoreInsertion.insertHighscore(randrange(10000000) , self.ask(self.screen, "Name: "), str(self.the_score), time)
 							self.highscore_submitted = True
 							self.new_game()
+							winnertext = self.font.render("CONGRATZ YU WIN", 1, (255, 255, 255))
+							winnertext_pos = self.screen.get_rect()
+							winnertext_pos.center = (400, 250)
 
 
 					self.set_up_deckB()		#Update deck B
