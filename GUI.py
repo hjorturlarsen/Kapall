@@ -128,7 +128,6 @@ class GUI:
 								else:							#move card to it's original position
 									card.rect.x = self.old_pos[0]
 									card.rect.y = self.old_pos[1]
-
 					#Check if we have lost the game
 					if self.check_for_loss():
 						print "tapadi"
@@ -136,14 +135,11 @@ class GUI:
 					#Check if we have won the game and submit score and initials to database
 					if self.check_for_win():
 						time = self.time
+						self.screen.blit(background, backgroundRect)
 						if self.highscore_submitted == False:
 							HighScoreInsertion.insertHighscore(randrange(10000000) , self.ask(self.screen, "Name: "), str(self.the_score), time)
 							self.highscore_submitted = True
 							self.new_game()
-							winnertext = self.font.render("CONGRATZ YU WIN", 1, (255, 255, 255))
-							winnertext_pos = self.screen.get_rect()
-							winnertext_pos.center = (400, 250)
-
 
 					self.set_up_deckB()		#Update deck B
 					self.set_up_deckA()		#Update deck A
