@@ -33,32 +33,34 @@ class GUI:
 
 		self.game = Golf_relaxed()
 		self.collumns = [self.game.col1.sprites(), self.game.col2.sprites(), self.game.col3.sprites(), self.game.col4.sprites(), self.game.col5.sprites(), self.game.col6.sprites(), self.game.col7.sprites()]
-		allsprites =  pygame.sprite.LayeredUpdates((self.game.col1, self.game.col2, self.game.col3, self.game.col4, self.game.col5, self.game.col6, self.game.col7))
+		self.allsprites =  pygame.sprite.LayeredUpdates((self.game.col1, self.game.col2, self.game.col3, self.game.col4, self.game.col5, self.game.col6, self.game.col7))
 
 		clock = pygame.time.Clock()
 
-		ourMenu = ["Start"]
-		myMenu = menu.Menu(ourMenu, 'data/dolanbackground.png')
-		myMenu.drawMenu()
+		self.ourMenu = ["Start"]
+		self.myMenu = menu.Menu(self.ourMenu, 'data/dolanbackground.png')
+		self.myMenu.drawMenu()
 
 		self.MouseLPressed = False
 
 		while 1:
 		# INPUT EVENTS
 			for event in pygame.event.get():
-				myMenu.handleEvent(event)
+				self.myMenu.handleEvent(event)
 				# QUIT TO MENU
 				if event.type == QUIT:
 					return
 				elif event.type == KEYDOWN and event.key == K_ESCAPE:
-					myMenu.activate()
+					self.myMenu.activate()
 				elif event.type == KEYDOWN and event.key == K_h:
 					self.highscore_box(self.screen)
+				elif event.type == KEYDOWN and event.key == K_n:
+					self.new_game()
 				elif event.type == menu.Menu.MENUCLICKEDEVENT:
 					#START AND INITIALIZE GAME
 					if event.item == 0:
 						isGameActive = True
-						myMenu.deactivate()
+						self.myMenu.deactivate()
 
 						self.start = tm.time()
 						self.set_up_collumns()
@@ -67,13 +69,12 @@ class GUI:
 						self.selectable_collumns()
 						self.add_score(0)
 
-			if myMenu.isActive():
-				myMenu.drawMenu()
+			if self.myMenu.isActive():
+				self.myMenu.drawMenu()
 
 			#TEIKNA HLUTI
 			else:
 				self.screen.blit(background, backgroundRect)
-				allsprites.draw(self.screen)
 				self.update()
 
 				if event.type == MOUSEBUTTONDOWN:
@@ -135,6 +136,7 @@ class GUI:
 						if self.highscore_submitted == False:
 							HighScoreInsertion.insertHighscore(randrange(10000000) , self.ask(self.screen, "Name: "), str(self.the_score), time)
 							self.highscore_submitted = True
+							self.new_game()
 
 
 					self.set_up_deckB()		#Update deck B
@@ -162,14 +164,15 @@ class GUI:
 	def update(self):
 		deckA = self.game.deckA.sprites()
 		deckB = self.game.deckB.sprites()
+		self.allsprites.draw(self.screen)
 		for idx, card in enumerate(deckA):
 			card.draw(self.screen)
 		for idx, card in enumerate(deckB):
 			card.draw(self.screen)
+
 		self.update_time()
 		self.screen.blit(self.text, self.textpos)
 		self.screen.blit(self.textTime, self.textposTime)
-		self.screen.blit(self.text, self.textpos)
 
 	#Position cards in collumns
 	def set_up_collumns(self):
@@ -237,7 +240,6 @@ class GUI:
 		fontobject = pygame.font.Font('data/menu_font.ttf',26)
 		pygame.draw.rect(screen, (0,0,0),((screen.get_width() / 2) - 160,(screen.get_height() / 2) - 200,300,400), 0)
 		pygame.draw.rect(screen, (255,255,255),((screen.get_width() / 2) - 160,(screen.get_height() / 2) - 200,300,400), 1)
-		###################
 		screen.blit(fontHigh.render("HIGHSCORE", 1, (85,13,179)),((screen.get_width() / 2)-80, (screen.get_height() / 2) - 194))
 		count = 0
 		for i in range(len(f)-1):
@@ -248,7 +250,6 @@ class GUI:
 				count += 6
 				lina = f[count] + "  " + f[count+1] + "  " + f[count+2] + "  " + f[count+3] + f[count+4] + f[count+5]
 				screen.blit(fontobject.render(lina, 1, (255,255,255)),((screen.get_width() / 2) - 130, (screen.get_height() / 2) - 132 + count*3))
-		###################
 		pygame.display.flip()
 		while 1:
 			inkey = self.get_key()
@@ -321,3 +322,17 @@ class GUI:
 		self.text = self.font.render("Score: %d" % (self.the_score), 1, (255, 255, 255))
 		self.textpos = self.text.get_rect()
 		self.textpos.center = (680, 475)
+
+	def new_game(self):
+		self.the_timeSec = 0.0
+		self.the_timeMin = 0.0
+		self.the_score = 0
+		self.score_multiplier = 0
+		self.highscore_submitted = False
+		self.old_pos = None
+		self.time = None
+
+		self.game = Golf_relaxed()
+		self.collumns = [self.game.col1.sprites(), self.game.col2.sprites(), self.game.col3.sprites(), self.game.col4.sprites(), self.game.col5.sprites(), self.game.col6.sprites(), self.game.col7.sprites()]
+		self.allsprites =  pygame.sprite.LayeredUpdates((self.game.col1, self.game.col2, self.game.col3, self.game.col4, self.game.col5, self.game.col6, self.game.col7))
+		self.myMenu.activate()
