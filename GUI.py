@@ -327,7 +327,7 @@ class GUI:
 	#else False
 	def check_for_win(self):
 		total_length = len(self.collumns[0]+self.collumns[1]+self.collumns[2]+self.collumns[3]+self.collumns[4]+self.collumns[5]+self.collumns[6])
-		if total_length == 30:
+		if total_length == 0:
 			return True
 		else:
 			return False
@@ -365,6 +365,7 @@ class GUI:
 		self.highscore_submitted = False
 		self.old_pos = None
 		self.time = None
+		self.game_lost = False
 
 		self.game = Golf_relaxed()
 		self.collumns = [self.game.col1.sprites(), self.game.col2.sprites(), self.game.col3.sprites(), self.game.col4.sprites(), self.game.col5.sprites(), self.game.col6.sprites(), self.game.col7.sprites()]
