@@ -22,7 +22,7 @@ the collumns can be placed on B.
 - The top 15 scores can be seen by toggling "h" on the keyboard.
 - Instructions on how to play the game can be seen by toggling "i" on the keyboard.
 - A new game can be started by pressing "n" on the keyboard.
-- The game lets you know when the game is lost.
+- The software lets you know when the game is lost.
 
 
 ![alt tag](http://i240.photobucket.com/albums/ff100/turta_/Dolan_zpsb6cce32d.png?t=1396540766)
