@@ -136,6 +136,8 @@ class GUI:
 						self.textLose = self.fontLose.render("YU SUK", 1, (255,0,0))
 						self.LosePos = self.textLose.get_rect()
 						self.LosePos.center = (400, 250)
+						for idx, col in enumerate(self.collumns):
+							col[-1].selectable = False
 
 					#Check if we have won the game and submit score and initials to database
 					if self.check_for_win():
