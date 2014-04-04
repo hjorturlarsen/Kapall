@@ -32,6 +32,7 @@ class GUI:
 		self.time = None
 		self.game_lost = False
 		self.game_won = False
+		self.dragging_card = False
 
 		self.game = Golf_relaxed()
 		self.collumns = [self.game.col1.sprites(), self.game.col2.sprites(), self.game.col3.sprites(), self.game.col4.sprites(), self.game.col5.sprites(), self.game.col6.sprites(), self.game.col7.sprites()]
@@ -93,7 +94,7 @@ class GUI:
 					#Select card from collumn
 					for idx, col in enumerate(self.collumns):
 						for idx2, card in enumerate(col):
-							if card.selectable:
+							if card.selectable and self.dragging_card == False:
 								card.clicked(event.pos)
 
 				if event.type == MOUSEBUTTONUP:
@@ -124,7 +125,8 @@ class GUI:
 									self.game.deckB.add(card)	#add card to deck B
 									col.pop()					#remove card from collumn
 									self.selectable_collumns()	#Make last cards in collumns selectable
-								else:							#move card to it's original position
+								#move card to it's original position
+								else:							
 									card.rect.x = self.old_pos[0]
 									card.rect.y = self.old_pos[1]
 					#Check if we have lost the game
@@ -155,6 +157,8 @@ class GUI:
 							self.new_game()
 							#self.new_game()
 
+					self.dragging_card = False
+
 					self.set_up_deckB()		#Update deck B
 					self.set_up_deckA()		#Update deck A
 
@@ -162,7 +166,11 @@ class GUI:
 				if self.MouseLPressed == True:
 					for idx, col in enumerate(self.collumns):
 						for idx2, card in enumerate(col):
-							card.move(event.pos)
+							try:
+								card.move(event.pos)
+								self.dragging_card = True
+							except AttributeError:
+								self.MouseLPressed = True
 
 				#If card collides with mouse-pointer, we get it's coordinates.
 				#So we can move it back to it's original position if the user
