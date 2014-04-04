@@ -1,4 +1,4 @@
-There are 35 cards on the table (7 cards in 5 rows). z
+There are 35 cards on the table (7 cards in 5 columns). z
 In the beginning the deck in the lower left corner z
 [called "A"] includes 17 cards that all face down. z
 You can click on A and the top card will be put face up z
