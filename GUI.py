@@ -76,7 +76,6 @@ class GUI:
 
 			#TEIKNA HLUTI
 			else:
-				self.screen.blit(self.background, self.backgroundRect)
 				self.update()
 
 				if event.type == MOUSEBUTTONDOWN:
@@ -179,6 +178,7 @@ class GUI:
 
 	#Updates cards, time and score
 	def update(self):
+		self.screen.blit(self.background, self.backgroundRect)
 		if self.game_lost == False:
 			deckA = self.game.deckA.sprites()
 			deckB = self.game.deckB.sprites()
@@ -197,6 +197,10 @@ class GUI:
 			self.screen.blit(self.background, self.backgroundRect)
 			self.screen.blit(self.textLose, self.LosePos)
 			self.screen.blit(self.textWinner, self.WinnerPos)
+		for idx, col in enumerate(self.collumns):
+			for idx2, card in enumerate(col):
+				if card.selected:
+					self.screen.blit(card.image,card.rect.topleft)
 
 
 	#Position cards in collumns
@@ -344,7 +348,7 @@ class GUI:
 	#else False
 	def check_for_win(self):
 		total_length = len(self.collumns[0]+self.collumns[1]+self.collumns[2]+self.collumns[3]+self.collumns[4]+self.collumns[5]+self.collumns[6])
-		if total_length == 0:
+		if total_length ==0:
 			return True
 		else:
 			return False
