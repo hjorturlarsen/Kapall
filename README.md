@@ -1,7 +1,7 @@
 Dolan Solitaire
 ======
 ###How the game works
-There are 35 cards on the table (5 cards in 7 rows).
+There are 35 cards on the table (5 cards in 7 columns).
 In the beginning the deck in the lower left corner
 (called "A") includes 17 cards that all face down.
 You can click on A and the top card will be put face up
